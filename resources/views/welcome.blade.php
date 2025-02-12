@@ -17,20 +17,32 @@
     <style>
         body {
             background: linear-gradient(to right, #636FA4, #E8CBC0);
+            animation: gradient 5s ease infinite;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
         .main-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 100vh;
-            padding: 0 100px;
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px;
         }
         .left-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 30px;
-            margin-left: 400px;
+            gap: 20px;
         }
         .circle-logo {
             width: 120px;
@@ -44,15 +56,45 @@
             justify-content: center;
             margin-bottom: 20px;
         }
+        h3 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            text-align: center;
+        }
         .btn-container {
             display: flex;
             gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
         }
         .right-container {
             width: 500px;
         }
         .card {
             padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        footer {
+            margin-top: 20px;
+            text-align: center;
+            color: #fff;
         }
     </style>
 </head>
@@ -62,10 +104,9 @@
         <!-- Left Side: Logo & Buttons -->
         <div class="left-container">
             <div class="circle-logo"></div>
-            <h3 class="text-white">Rainwater Catch Basin</h3>
+            <h3>Rainwater Catch Basin</h3>
             <div class="btn-container">
-                <a href="{{ route('login') }}" class="btn btn-primary">Log in</a>
-                <a href="{{ route('register') }}" class="btn btn-secondary">Register</a>
+                <a href="{{ route('login') }}" class="btn btn-primary">Get Started</a>
             </div>
         </div>
 
@@ -93,5 +134,9 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        &copy; 2025 Rainwater Catch Basin. All rights reserved.
+    </footer>
 </body>
 </html>
