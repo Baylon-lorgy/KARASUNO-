@@ -35,13 +35,11 @@ class LoginController extends Controller
         return redirect()->back()->with('gmail_error', 'Please use real gmail account.');
     }
 
-    protected function checkEmailExists($email)
-    {
-        // Implement your logic to check if the email exists using a third-party service or API
-        // For example, you can use an email verification API like Hunter, ZeroBounce, etc.
-        // Return true if the email exists, otherwise return false.
-
-        // Placeholder implementation, replace with actual API call
-        return true;
+    protected function authenticated(Request $request, $user)
+{
+    if (!$user->hasVerifiedEmail()) {
+        auth()->logout();
+        return redirect('/login')->with('error', 'You must verify your email first.');
     }
+}
 }

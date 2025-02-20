@@ -250,81 +250,90 @@
             <form method="POST" action="{{ route('register') }}">
                 @csrf
 
-<!-- Name -->
-<div>
-    <x-input-label for="name" :value="__('Name')" />
-    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-    <x-input-error :messages="$errors->get('name')" class="mt-2" />
-</div>
-
-<!-- Email Address -->
-<div class="mt-4">
-    <x-input-label for="email" :value="__('Email')" />
-    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-    <x-input-error :messages="$errors->get('email')" class="mt-2" />
-</div>
-
-<!-- Password -->
-<div class="mt-4">
-    <x-input-label for="password" :value="__('Password')" />
-    <x-text-input id="password" class="block mt-1 w-full"
-                    type="password"
-                    name="password"
-                    required autocomplete="new-password" />
-    <x-input-error :messages="$errors->get('password')" class="mt-2" />
-</div>
-
-<!-- Confirm Password -->
-<div class="mt-4">
-    <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-    <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                    type="password"
-                    name="password_confirmation" required autocomplete="new-password" />
-    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-</div>
-
-<!-- Register Button -->
-<div class="mt-4">
-    <x-primary-button class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
-        {{ __('Register') }}
-    </x-primary-button>
-</div>
-
-            </form>
-        </div>
-        <div class="form-container sign-in-container">
-            <form method="POST" action="{{ route('login') }}">
-                @csrf
-                <h1>Sign in</h1>
-                <div class="social-container">
-                   
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                   
+                <!-- Name -->
+                <div>
+                    <x-input-label for="name" :value="__('Name')" />
+                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
+                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
                 </div>
-                <span>or use your account</span>
-                <input type="email" placeholder="Email" name="email" required />
-                <input type="password" placeholder="Password" name="password" required />
-                <a href="{{ route('password.request') }}">Forgot your password?</a>
-                <button type="submit" class="btn">Sign In</button>
-            </form>
-        </div>
-        <div class="overlay-container">
-            <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                    <div class="circle-logo"></div>
-                    <h1>Rainwater Catch Basin</h1>
-                    <p>Already Registered?</p>
-                    <button class="ghost btn" id="signIn">Sign In</button>
+
+                <!-- Email Address -->
+                <div class="mt-4">
+                    <x-input-label for="email" :value="__('Email')" />
+                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
+                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
                 </div>
-                <div class="overlay-panel overlay-right">
-                    <div class="circle-logo"></div>
-                    <h1>Rainwater Catch Basin</h1>
-                    <p>Not yet Registered?</p>
-                    <button class="ghost btn" id="signUp">Sign Up</button>
+
+                <!-- Password -->
+                <div class="mt-4">
+                    <x-input-label for="password" :value="__('Password')" />
+                    <x-text-input id="password" class="block mt-1 w-full"
+                                    type="password"
+                                    name="password"
+                                    required autocomplete="new-password" />
+                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
                 </div>
-            </div>
-        </div>
-    </div>
+
+                <!-- Confirm Password -->
+                <div class="mt-4">
+                    <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+                    <x-text-input id="password_confirmation" class="block mt-1 w-full"
+                                    type="password"
+                                    name="password_confirmation" required autocomplete="new-password" />
+                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
+                </div>
+
+                <!-- Register Button -->
+                <div class="mt-4">
+                    
+                <x-primary-button class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                        {{ __('Register') }}
+                        
+                    </x-primary-button>
+                    @if (session('status') == 'verification-link-sent')
+                                <div class="alert alert-success">
+                                    A verification email has been sent to your email address.
+                                </div>
+                    @endif
+                </div>
+
+                            </form>
+                        </div>
+                        <div class="form-container sign-in-container">
+                            <form method="POST" action="{{ route('login') }}">
+                                @csrf
+                                <h1>Sign in</h1>
+                                <div class="social-container">
+                                            
+                                        <a href="{{ route('google.redirect') }}" class="social">
+                                        <i class="fab fa-google-plus-g"></i>
+                                        </a>
+                                
+                                </div>
+                                <span>or use your account</span>
+                                <input type="email" placeholder="Email" name="email" required />
+                                <input type="password" placeholder="Password" name="password" required />
+                                <a href="{{ route('password.request') }}">Forgot your password?</a>
+                                <button type="submit" class="btn">Sign In</button>
+                            </form>
+                        </div>
+                        <div class="overlay-container">
+                            <div class="overlay">
+                                <div class="overlay-panel overlay-left">
+                                    <div class="circle-logo"></div>
+                                    <h1>Rainwater Catch Basin</h1>
+                                    <p>Already Registered?</p>
+                                    <button class="ghost btn" id="signIn">Sign In</button>
+                                </div>
+                                <div class="overlay-panel overlay-right">
+                                    <div class="circle-logo"></div>
+                                    <h1>Rainwater Catch Basin</h1>
+                                    <p>Not yet Registered?</p>
+                                    <button class="ghost btn" id="signUp">Sign Up</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
    
 

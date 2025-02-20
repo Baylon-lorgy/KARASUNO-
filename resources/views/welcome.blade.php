@@ -116,7 +116,7 @@
                 <div class="card-body">
                     <!-- Facebook Page Plugin -->
                     <div class="fb-page" 
-                        data-href="https://www.facebook.com/NMACLRCfacebookpageofficial"
+                        data-href="https://www.facebook.com/profile.php?id=100068682045391"
                         data-tabs="timeline"
                         data-width="500"
                         data-height="650"

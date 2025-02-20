@@ -235,16 +235,26 @@
 <body>
     <div class="container" id="container">
         
-        <div class="form-container sign-in-container">
-            <form method="POST" action="{{ route('password.email') }}">
-                @csrf
-                <h1>Forgot Password</h1>
-                
-                <span>or use your email to reset your password</span>
-                <input type="email" placeholder="Email" name="email" required />
-                <button type="submit" class="btn">Email Password Reset Link</button>
-            </form>
+    <h2>Forgot Password</h2>
+    <p>Enter your email to receive a password reset link.</p>
+
+    @if(session('status'))
+        <div class="alert alert-success">{{ session('status') }}</div>
+    @endif
+
+    <form method="POST" action="{{ route('password.email') }}">
+        @csrf
+        <div class="mb-3">
+            <label for="email" class="form-label">Email Address</label>
+            <input type="email" name="email" class="form-control" required>
         </div>
+
+        @error('email')
+            <div class="text-danger">{{ $message }}</div>
+        @enderror
+
+        <button type="submit" class="btn btn-primary">Send Password Reset Link</button>
+    </form>
         <div class="overlay-container">
             <div class="overlay">
                 

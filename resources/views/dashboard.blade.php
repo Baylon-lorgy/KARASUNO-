@@ -123,6 +123,9 @@
                 </div>
             </div>
         </div>
+
+        <b></b>
+
         <div class="col-lg-4 mb-2">
             <div class="card">
                 <div class="card-body">
@@ -141,6 +144,62 @@
                 </div>
             </div>
         </div>
+        <div class="col-lg-4 col-md-6 mb-2">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="mb-0">Humidity</h6>
+                    <p class="text-sm">Water Flow Valves</p>
+                    <div class="pe-2">
+                        <div class="chart">
+                            <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
+                        </div>
+                    </div>
+                    <hr class="dark horizontal">
+                    <div class="d-flex">
+                        <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
+                        <p class="mb-0 text-sm">campaign sent 2 days ago</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h6 class="mb-0">Sprinkler Control</h6>
+                    <p class="text-sm">Adjust and schedule your sprinkler system.</p>
+
+                    <!-- Toggle Sprinkler ON/OFF -->
+                    <div class="d-flex align-items-center mb-3">
+                        <label class="me-2 text-sm">Sprinkler:</label>
+                        <button id="toggleSprinkler" class="btn btn-outline-primary btn-sm">Turn ON</button>
+                    </div>
+
+                    <!-- Schedule Sprinkler -->
+                    <form method="POST" action="{{ route('sprinkler.schedule') }}">
+                        @csrf
+                        <div class="mb-3">
+                            <label for="wateringTime" class="form-label">Set Watering Time</label>
+                            <input type="time" class="form-control" id="wateringTime" name="watering_time" required>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="duration" class="form-label">Duration</label>
+                            <select class="form-control" id="duration" name="duration">
+                                <option value="5">5 minutes</option>
+                                <option value="10">10 minutes</option>
+                                <option value="15">15 minutes</option>
+                                <option value="20">20 minutes</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary w-100">Save Schedule</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
@@ -162,3 +221,25 @@
 @endif
 
 @endsection
+
+<!-- JavaScript for Sprinkler Toggle -->
+@section('scripts')
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    const toggleButton = document.getElementById("toggleSprinkler");
+
+    toggleButton.addEventListener("click", function() {
+        if (toggleButton.textContent === "Turn ON") {
+            toggleButton.textContent = "Turn OFF";
+            toggleButton.classList.replace("btn-outline-primary", "btn-danger");
+        } else {
+            toggleButton.textContent = "Turn ON";
+            toggleButton.classList.replace("btn-danger", "btn-outline-primary");
+        }
+    });
+});
+</script>
+@endsection
+
+
+

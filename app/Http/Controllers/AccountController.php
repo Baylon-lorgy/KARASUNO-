@@ -19,25 +19,18 @@ class AccountController extends Controller
     public function update(Request $request)
     {
         $request->validate([
-            'username' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'phone_number' => ['nullable', 'string', 'max:255'],
-            'location' => ['nullable', 'string', 'max:255'],
-            'language' => ['nullable', 'string', 'max:255'],
-            'password' => ['nullable', 'confirmed', Rules\Password::defaults()],
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|max:255|unique:users,email,' . auth()->id(),
+            'mobile' => 'nullable|string|max:20', // Ensure this allows updates
+            'location' => 'nullable|string|max:255',
         ]);
+        
 
         $user = Auth::user();
-        $user->username = $request->username;
+        $user->name = $request->name;
         $user->email = $request->email;
-        $user->phone_number = $request->phone_number;
-        $user->location = $request->location;
-        $user->language = $request->language;
-
-        if ($request->password) {
-            $user->password = Hash::make($request->password);
-        }
-
+        $user->mobile = $request->mobile;
+        
         $user->save();
 
         return redirect()->route('profile.edit')->with('status', 'profile-updated');

@@ -21,15 +21,61 @@
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
   
 </head>
 
     <style>
 
-        body {
-            background: linear-gradient(to right, #636FA4, #E8CBC0);
+      body {
+        background: linear-gradient(to right, #636FA4, #E8CBC0);
+        animation: gradient 5s ease infinite;
+          font-family: 'Lora', sans-serif;
+          
+          margin: 0;
+          padding: 0;
+      }
+
+      .button {
+          background-color: #344E41; /* Deep Forest Green */
+          color: #F6F6F6; /* Soft White */
+          padding: 12px 20px;
+          border-radius: 12px;
+          border: none;
+          font-size: 16px;
+          font-weight: bold;
+          cursor: pointer;
+          transition: all 0.3s ease-in-out;
         }
+
+      .button:hover {
+          background-color: #2C3D33; /* Darker Green */
+          transform: scale(1.05);
+          box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        html, body {
+    min-height: 100vh; /* Ensures it covers full viewport height */
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    background: linear-gradient(to bottom, #DCE4C7, #A3B18A);
+    font-family: 'Lora', serif;
+}
+
+.container {
+    flex-grow: 1; /* Makes it expand */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+
+
+
+
 
     </style>
 
@@ -39,8 +85,8 @@
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2" id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand px-4 py-3 m-0" href="{{ route('dashboard') }}" target="_blank">
-        <img src="https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/466458716_869630271997402_9083455242095747570_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=dNEe5EZGq5gQ7kNvgHUbXVU&_nc_oc=AdiK6xyn3f9rhAh5RUvNyPF_1lVwgpI7fvjAIku_rdZAAf_XeldRO7rpn7eGd9dBf75CPO4fsxIvpIIzPWkYGsNU&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=ACngSlc3OEVAckWpcnA64Qd&oh=00_AYAJ_1ftU1H9QIQAD22G7GW2wJbSDL3YrSKg33xbkkDVpA&oe=67ACD92D" class="navbar-brand-img" width="26" height="26" alt="main_logo">
+      <a class="navbar-brand px-4 py-3 m-0" href="{{ route('welcome') }}" >
+        <img src="https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/466458716_869630271997402_9083455242095747570_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeESqb9kOvO31JySvEXLdZNMj9_UUMw76LSP39RQzDvotLTYI6P6-l4uJv4JGcamYs6NmpBqWpGfgMmGo3bUH6xY&_nc_ohc=xZfn8BCdhcIQ7kNvgGc0khl&_nc_oc=AdgdyarC1-LrK95mfM1bxa54pX2ukuUsqzzlrwxtnazkS40IsJIL5IriCC6pS2-Px-PGCrCVMIzKxy6kwTY3Pa9q&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=A4aPVxQsyTBAzl9VCVxllor&oh=00_AYAob-JfFOCh_Oj1sauyeWMiivNqeefOvc7U7X7xjQx0UQ&oe=67BCE36D" class="navbar-brand-img" width="26" height="26" alt="main_logo">
         <span class="ms-1 text-sm text-dark">Rainwater Catch Basin</span>
       </a>
     </div>
@@ -105,40 +151,73 @@
                 </div>
               </a>
             </li>
-            
-            
-            <form method="POST" action="{{ route('logout') }}" id="logout-form">
-    @csrf
 
-    <button type="button" class="btn btn-outline-info" data-bs-toggle="modal" data-bs-target="#logoutModal">
-        {{ __('Log Out') }}
-    </button>
-        </form>
+            
+          </ul>  
 
-                        <!-- Logout Confirmation Modal -->
-                        <div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
-                          <div class="modal-dialog">
-                            <div class="modal-content">
-                              <div class="modal-header bg-transparent border-0">
-                                <i class="material-symbols-rounded text-danger me-2">warning</i>
-                                <h5 class="modal-title" id="logoutModalLabel">Logout</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                              </div>
-                              <hr class="horizontal dark m-0">
-                              <div class="modal-body">
-                                Are you sure you want to log out?
-                              </div>
-                              <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                                <button type="button" class="btn btn-danger" onclick="document.getElementById('logout-form').submit();">Yes</button>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-           
-      
-          </ul>
+          
+          <li class="nav-item dropdown pe-3 d-flex align-items-center">
+  <a href="javascript:;" class="nav-link text-body p-0" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+    <i class="material-symbols-rounded">account_circle</i> <!-- User Icon -->
+  </a>
+  <ul class="dropdown-menu dropdown-menu-end px-2 py-3 me-sm-n4" aria-labelledby="userDropdown">
+    <li class="mb-2">
+      <a class="dropdown-item border-radius-md" href="javascript:;">
+        <div class="d-flex py-1">
+          <div class="my-auto">
+            <img src="../assets/img/team-2.jpg" class="avatar avatar-sm me-3">
+          </div>
+          <div class="d-flex flex-column justify-content-center">
+            <h6 class="text-sm font-weight-normal mb-1">
+              <span class="font-weight-bold">Hello, User</span>
+            </h6>
+            <p class="text-xs text-secondary mb-0">
+              <i class="fa fa-circle text-success me-1"></i> Online
+            </p>
+          </div>
         </div>
+      </a>
+    </li>
+    <li>
+      <hr class="dropdown-divider">
+    </li>
+    <li><a class="dropdown-item border-radius-md" href="#">Profile</a></li>
+    <li><a class="dropdown-item border-radius-md" href="#">Settings</a></li>
+    <li>
+      <hr class="dropdown-divider">
+    </li>
+    <li>
+      <form method="POST" action="{{ route('logout') }}" id="logout-form">
+        @csrf
+        <button type="button" class="dropdown-item border-radius-md text-danger" data-bs-toggle="modal" data-bs-target="#logoutModal">
+          <i class="material-symbols-rounded me-2">logout</i> Log Out
+        </button>
+      </form>
+    </li>
+  </ul>
+</li>
+
+<!-- Logout Confirmation Modal -->
+<div class="modal fade" id="logoutModal" tabindex="-1" aria-labelledby="logoutModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-transparent border-0">
+        <i class="material-symbols-rounded text-danger me-2">warning</i>
+        <h5 class="modal-title" id="logoutModalLabel">Logout</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <hr class="horizontal dark m-0">
+      <div class="modal-body">
+        Are you sure you want to log out?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-danger" onclick="document.getElementById('logout-form').submit();">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
+
       </div>
     </nav>
     <!-- End Navbar -->
@@ -451,6 +530,50 @@
         },
       },
     });
+
+    document.addEventListener("DOMContentLoaded", function () {
+    // Ensure Navbar Fixed is unchecked by default
+    document.getElementById("navbarFixed").checked = false;
+});
+
+function darkMode(toggle) {
+    let body = document.body;
+    let sidebar = document.querySelector(".sidenav"); // Sidebar element
+    let content = document.querySelector(".main-content"); // Main dashboard content
+    let sidenavTypeButtons = document.querySelectorAll("[data-class]"); // Sidenav type buttons
+
+    if (toggle.checked) {
+        // Enable dark mode
+        body.classList.add("dark-mode");
+        sidebar.classList.add("bg-gradient-dark");
+        content.classList.add("text-white"); // Ensure text remains visible in dark mode
+
+        // Automatically set Sidenav Type to "Dark"
+        sidenavTypeButtons.forEach(button => {
+            if (button.getAttribute("data-class") === "bg-gradient-dark") {
+                button.classList.add("active");
+            } else {
+                button.classList.remove("active");
+            }
+        });
+
+    } else {
+        // Disable dark mode
+        body.classList.remove("dark-mode");
+        sidebar.classList.remove("bg-gradient-dark");
+        content.classList.remove("text-white"); // Reset text color to default
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    var dropdownElements = document.querySelectorAll('.dropdown-toggle');
+    dropdownElements.forEach(function (dropdown) {
+      new bootstrap.Dropdown(dropdown);
+    });
+  });
+
+
+
   </script>
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
@@ -465,6 +588,11 @@
   <script async defer src="https://buttons.github.io/buttons.js"></script>
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="../assets/js/material-dashboard.min.js?v=3.2.0"></script>
+  <!-- Bootstrap Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 </body>
 
 </html>
