@@ -165,6 +165,8 @@
             padding: 10px 20px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none; /* Ensure the link looks like a button */
+            display: inline-block; /* Ensure the link looks like a button */
         }
         .form-container form .btn:hover {
             background-color: #0056b3;
@@ -176,88 +178,68 @@
             text-decoration: none;
             margin: 15px 0;
         }
-        footer {
-            background-color: #222;
-            color: #fff;
-            text-align: center;
-            padding: 20px 0;
-            position: absolute;
-            bottom: 0;
-            width: 100%;
+        .circle-logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-image: url('https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/466458716_869630271997402_9083455242095747570_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=dNEe5EZGq5gQ7kNvgHUbXVU&_nc_oc=AdiK6xyn3f9rhAh5RUvNyPF_1lVwgpI7fvjAIku_rdZAAf_XeldRO7rpn7eGd9dBf75CPO4fsxIvpIIzPWkYGsNU&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=ACngSlc3OEVAckWpcnA64Qd&oh=00_AYAJ_1ftU1H9QIQAD22G7GW2wJbSDL3YrSKg33xbkkDVpA&oe=67ACD92D');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
         }
-        footer a {
-            color: #FF4B2B;
-            text-decoration: none;
+        #signIn {
+            background-color: #FFFFFF;
+            color: #007bff;
+            border: 1px solid #007bff;
         }
-        footer a:hover {
-            text-decoration: underline;
+
+        #signIn:hover {
+            background-color: #f0f0f0;
+            color: #0056b3;
+        }
+        .btn {
+            border-radius: 5px;
+            border: none;
+            background: #007bff;
+            color: #FFFFFF;
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none; /* Ensure the link looks like a button */
+            display: inline-block; /* Ensure the link looks like a button */
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+            transform: scale(1.05);
+        }
+
+        .ghost {
+            background-color: #FFFFFF;
+            color: #007bff;
+            border: 1px solid #007bff;
+        }
+
+        .ghost:hover {
+            background-color: #f0f0f0;
+            color: #0056b3;
         }
     </style>
 </head>
 
 <body>
     <div class="container" id="container">
-        <div class="form-container sign-up-container">
-            <form method="POST" action="{{ route('register') }}">
-                @csrf
-
-                <!-- Name -->
-                <div>
-                    <x-input-label for="name" :value="__('Name')" />
-                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
-                </div>
-
-                <!-- Email Address -->
-                <div class="mt-4">
-                    <x-input-label for="email" :value="__('Email')" />
-                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                </div>
-
-                <!-- Password -->
-                <div class="mt-4">
-                    <x-input-label for="password" :value="__('Password')" />
-
-                    <x-text-input id="password" class="block mt-1 w-full"
-                                    type="password"
-                                    name="password"
-                                    required autocomplete="new-password" />
-
-                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                </div>
-
-                <!-- Confirm Password -->
-                <div class="mt-4">
-                    <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-                    <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                    type="password"
-                                    name="password_confirmation" required autocomplete="new-password" />
-
-                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                </div>
-
-                <div class="flex items-center justify-end mt-4">
-                    <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                        {{ __('Already registered?') }}
-                    </a>
-
-                    <x-primary-button class="ms-4">
-                        {{ __('Register') }}
-                    </x-primary-button>
-                </div>
-            </form>
-        </div>
+        
         <div class="form-container sign-in-container">
             <form method="POST" action="{{ route('password.email') }}">
                 @csrf
                 <h1>Forgot Password</h1>
-                <div class="social-container">
-                    <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
-                    <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
-                </div>
+                
                 <span>or use your email to reset your password</span>
                 <input type="email" placeholder="Email" name="email" required />
                 <button type="submit" class="btn">Email Password Reset Link</button>
@@ -265,28 +247,19 @@
         </div>
         <div class="overlay-container">
             <div class="overlay">
-                <div class="overlay-panel overlay-left">
-                    <h1>Welcome Back!</h1>
-                    <p>To keep connected with us please login with your personal info</p>
-                    <button class="ghost btn" id="signIn">Sign In</button>
-                </div>
+                
                 <div class="overlay-panel overlay-right">
-                    <h1>Hello, Friend!</h1>
-                    <p>Enter your personal details and start journey with us</p>
-                    <button class="ghost btn" id="signUp">Sign Up</button>
+                <div class="circle-logo"></div>
+                    <h1>Rainwater Catch Basin</h1>
+                    <p>Go back to Sign In?</p>
+                    <a href="{{ route('login') }}" class="ghost btn" id="signIn">Go back</a>
+                    
                 </div>
             </div>
         </div>
     </div>
 
-    <footer>
-        <p>
-            Created with <i class="fa fa-heart"></i> by
-            <a target="_blank" href="https://florin-pop.com">Florin Pop</a>
-            - Read how I created this and how you can join the challenge
-            <a target="_blank" href="https://www.florin-pop.com/blog/2019/03/double-slider-sign-in-up-form/">here</a>.
-        </p>
-    </footer>
+    
 
     <script>
         const signUpButton = document.getElementById('signUp');
