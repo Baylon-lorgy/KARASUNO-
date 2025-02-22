@@ -33,34 +33,13 @@
                         height: 100vh;
                         display: flex;
                         flex-direction: column;
-                        justify-content: center;
-                        align-items: center;
+                       
                         margin: 0;
                         padding: 0;
                     }
 
       
-                      .plant {
-                          position: absolute;
-                          right: 65px; /* Adjust this value to move it more to the right */
-                          top: 720px; /* Adjust this value to position it properly */
-                          width: 120px; /* Adjust size if needed */
-                          height: 120px;
-                          background-size: cover;
-                          background-position: center;
-                          z-index: 0; /* Ensures it's behind the logo */
-                      }
 
-                      .plant2 {
-                          position: absolute;
-                          right: 75px; /* Adjust this value to move it more to the right */
-                          top: 720px; /* Adjust this value to position it properly */
-                          width: 120px; /* Adjust size if needed */
-                          height: 120px;
-                          background-size: cover;
-                          background-position: center;
-                          z-index: 0; /* Ensures it's behind the logo */
-                      }
 
 
 
@@ -74,7 +53,7 @@
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2" id="sidenav-main">
     <div class="sidenav-header">
       <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand px-4 py-3 m-0" href="{{ route('homepage') }}" >
+      <a class="navbar-brand px-4 py-3 m-0" href="{{ route('viewhomepage') }}" >
         <img src="https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/466458716_869630271997402_9083455242095747570_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeESqb9kOvO31JySvEXLdZNMj9_UUMw76LSP39RQzDvotLTYI6P6-l4uJv4JGcamYs6NmpBqWpGfgMmGo3bUH6xY&_nc_ohc=xZfn8BCdhcIQ7kNvgGc0khl&_nc_oc=AdgdyarC1-LrK95mfM1bxa54pX2ukuUsqzzlrwxtnazkS40IsJIL5IriCC6pS2-Px-PGCrCVMIzKxy6kwTY3Pa9q&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=A4aPVxQsyTBAzl9VCVxllor&oh=00_AYAob-JfFOCh_Oj1sauyeWMiivNqeefOvc7U7X7xjQx0UQ&oe=67BCE36D" class="navbar-brand-img" width="26" height="26" alt="main_logo">
         <span class="ms-1 text-sm text-dark">Rainwater Catch Basin</span>
       </a>
@@ -83,35 +62,13 @@
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
     <ul class="navbar-nav">
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('dashboard') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" 
-               href="{{ route('dashboard') }}">
+            <a class="nav-link {{ request()->routeIs('viewdashboard') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" 
+               href="{{ route('viewdashboard') }}">
                 <i class="material-symbols-rounded opacity-5">dashboard</i>
                 <span class="nav-link-text ms-1">Dashboard</span>
             </a>
         </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('tables') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" 
-               href="{{ route('tables') }}">
-                <i class="material-symbols-rounded opacity-5">table_view</i>
-                <span class="nav-link-text ms-1">Tables</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('account') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" 
-               href="{{ route('account') }}">
-                <i class="material-symbols-rounded opacity-5">person</i>
-                <span class="nav-link-text ms-1">Profile Account</span>
-            </a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('notifications') ? 'active bg-gradient-dark text-white' : 'text-dark' }}" 
-               href="{{ route('notifications') }}">
-                <i class="material-symbols-rounded opacity-5">notifications</i>
-                <span class="nav-link-text ms-1">Notifications</span>
-            </a>
-        </li>
-        <img src="https://i.pinimg.com/originals/ee/9d/de/ee9dde88ff4949f5984bf108bdeea0bc.gif" alt="Google Sign-in" class="plant">
-        <img src="https://i.pinimg.com/originals/7f/cf/37/7fcf37c760d468cdbd546c0c1d6680c8.gif" alt="Google Sign-in" class="plant">
+        
     </ul>
 </div>
    

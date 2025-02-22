@@ -1,12 +1,13 @@
-@extends('layouts.dashboardlayout')
+@extends('layouts.viewdashboardlayout')
 
 @section('title', 'Dashboard')
 
 @section('content')
+
 <div class="container-fluid py-2">
     <div class="row">
         <div class="col-12">
-            <h3 class="mb-0 h4 font-weight-bolder">Admin Dashboard</h3>
+            <h3 class="mb-0 h4 font-weight-bolder">Dashboard</h3>
             <p class="mb-4"></p>
         </div>
         <div class="col-xl-3 col-sm-6 mb-2">
@@ -85,6 +86,9 @@
                 </div>
             </div>
         </div>
+
+        
+        
     </div>
     <div class="row">
         <div class="col-lg-4 col-md-6 mb-2">
@@ -163,83 +167,33 @@
             </div>
         </div>
 
-        <div class="col-lg-6 col-md-12 mb-4">
-            <div class="card">
-                <div class="card-body">
-                    <h6 class="mb-0">Sprinkler Control</h6>
-                    <p class="text-sm">Adjust and schedule your sprinkler system.</p>
+        
 
-                    <!-- Toggle Sprinkler ON/OFF -->
-                    <div class="d-flex align-items-center mb-3">
-                        <label class="me-2 text-sm">Sprinkler:</label>
-                        <button id="toggleSprinkler" class="btn btn-outline-primary btn-sm">Turn ON</button>
-                    </div>
+    </div>
+</div>
 
-                    <!-- Schedule Sprinkler -->
-                    <form method="POST" action="{{ route('sprinkler.schedule') }}">
-                        @csrf
-                        <div class="mb-3">
-                            <label for="wateringTime" class="form-label">Set Watering Time</label>
-                            <input type="time" class="form-control" id="wateringTime" name="watering_time" required>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="duration" class="form-label">Duration</label>
-                            <select class="form-control" id="duration" name="duration">
-                                <option value="5">5 minutes</option>
-                                <option value="10">10 minutes</option>
-                                <option value="15">15 minutes</option>
-                                <option value="20">20 minutes</option>
-                            </select>
-                        </div>
-
-                        <button type="submit" class="btn btn-primary w-100">Save Schedule</button>
-                    </form>
+  <!-- Facebook Page Plugin beside Humidity card -->
+  <div class="col-lg-4 col-md-6 mb-2">
+        <div class="card z-index-0 fadeIn3 fadeInBottom">
+            <div class="card-body">
+                <!-- Facebook Page Plugin -->
+                <div class="fb-page" 
+                    data-href="https://www.facebook.com/profile.php?id=100068682045391"
+                    data-tabs="timeline"
+                    data-width="500"
+                    data-height="650"
+                    data-small-header="false"
+                    data-adapt-container-width="true"
+                    data-hide-cover="false"
+                    data-show-facepile="true">
                 </div>
+                
+                <!-- Facebook SDK -->
+                <script async defer crossorigin="anonymous" 
+                    src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v16.0">
+                </script>
             </div>
         </div>
-
-
     </div>
-</div>
-
-@if(session('success'))
-<div class="position-fixed bottom-1 end-1 z-index-2">
-    <div class="toast fade show p-2 bg-white" role="alert" aria-live="assertive" id="successToast" aria-atomic="true">
-        <div class="toast-header border-0">
-            <i class="material-symbols-rounded text-success me-2">check</i>
-            <span class="me-auto font-weight-bold">Material Dashboard</span>
-            <small class="text-body">Just now</small>
-            <i class="fas fa-times text-md ms-3 cursor-pointer" data-bs-dismiss="toast" aria-label="Close"></i>
-        </div>
-        <hr class="horizontal dark m-0">
-        <div class="toast-body">
-            {{ session('success') }}
-        </div>
-    </div>
-</div>
-@endif
 
 @endsection
-
-<!-- JavaScript for Sprinkler Toggle -->
-@section('scripts')
-<script>
-document.addEventListener("DOMContentLoaded", function() {
-    const toggleButton = document.getElementById("toggleSprinkler");
-
-    toggleButton.addEventListener("click", function() {
-        if (toggleButton.textContent === "Turn ON") {
-            toggleButton.textContent = "Turn OFF";
-            toggleButton.classList.replace("btn-outline-primary", "btn-danger");
-        } else {
-            toggleButton.textContent = "Turn ON";
-            toggleButton.classList.replace("btn-danger", "btn-outline-primary");
-        }
-    });
-});
-</script>
-@endsection
-
-
-

@@ -11,14 +11,33 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\Request;
+use App\Http\Controllers\PasswordResetController;
+
 
 Route::get('/', function () {
     return view('welcome');
 })->name('welcome');
 
+Route::get('/homepage', function () {
+    return view('homepage');
+})->middleware(['auth', 'verified'])->name('homepage');
+
+Route::get('/viewhomepage', function () {
+    return view('viewhomepage');
+})->middleware(['auth', 'verified'])->name('viewhomepage');
+
+
+
 Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
+
+
+Route::get('/viewdashboard', function () {
+    return view('viewdashboard');
+})->middleware(['auth'])->name('viewdashboard');
+
+
 
 Route::get('/tables', function () {
     return view('tables');
@@ -34,15 +53,14 @@ Route::get('/notifications', function () {
 
 Route::post('login', [LoginController::class, 'login'])->name('login');
 
-Route::get('register', [RegisterController::class, 'showRegistrationForm'])->name('register');
-Route::post('register', [RegisterController::class, 'register']);
 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
+Route::post('/password-reset-request', [PasswordResetController::class, 'sendResetRequest'])->name('password.reset.request');
+
 Route::post('/sprinkler/schedule', [SprinklerController::class, 'schedule'])->name('sprinkler.schedule');
 
-Route::get('/verify-email', [VerificationController::class, 'verifyEmail'])->name('verification.verify');
 
 
 Route::middleware('auth')->group(function () {
@@ -57,7 +75,7 @@ Route::middleware('auth')->group(function () {
 });
 
 
-//GOOGLE API AUTHENTICATION
+//GOOGLE API AUTHENTICATION USER VIEW
 Route::get('/auth/google', function () {
     return Socialite::driver('google')->redirect();
 })->name('google.redirect');
@@ -79,7 +97,7 @@ Route::get('/auth/google/callback', function () {
 
         Auth::login($user);
 
-        return redirect('/dashboard');
+        return redirect('/viewdashboard');
     } catch (\Exception $e) {
         dd($e->getMessage()); // Debug: Check for errors
     }

@@ -1,23 +1,33 @@
 <?php
-// filepath: /C:/Users/USER/Desktop/IOT Raincatch Basin/System/IotSytem/app/Http/Controllers/Auth/LoginController.php
 
 namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth; // Make sure to include this
 
 class LoginController extends Controller
 {
     public function login(Request $request)
     {
-        // ... existing login logic ...
+        // Validate the login request
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required'
+        ]);
 
-        if (auth()->attempt($credentials)) {
-            // Set the flash message
-            session()->flash('success', 'Successfully logged in!');
-            return redirect()->route('dashboard');
+        // Attempt login
+        $credentials = $request->only('email', 'password');
+
+        if (Auth::attempt($credentials)) {
+            // Regenerate session for security
+            $request->session()->regenerate();
+
+            // Flash success message
+            return redirect()->route('dashboard')->with('success', 'Successfully logged in!');
         }
 
-        // ... existing login logic ...
+        // If login fails, flash error message
+        return redirect()->back()->with('error', 'You have entered an invalid account. Please try again.');
     }
 }

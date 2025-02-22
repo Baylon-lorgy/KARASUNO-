@@ -33,6 +33,20 @@ class LoginController extends Controller
         }
 
         return redirect()->back()->with('gmail_error', 'Please use real gmail account.');
+        // Check if user exists in the database
+    $user = User::where('email', $request->email)->first();
+
+    if (!$user) {
+        return redirect()->back()->with('error', 'This account is not yet registered. Please sign up.');
+    }
+
+    // Attempt login
+    if (Auth::attempt($request->only('email', 'password'))) {
+        return redirect()->route('dashboard'); // Change this to your dashboard route
+    }
+
+    return redirect()->back()->with('error', 'Invalid credentials. Please try again.');
+
     }
 
     protected function authenticated(Request $request, $user)

@@ -5,9 +5,19 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Login - Rainwater Catch Basin</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+   <!-- Fonts & Icons -->
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+
+   
+
+
+
+
     <style>
         body {
             background: linear-gradient(to right, #636FA4, #E8CBC0);
@@ -217,7 +227,7 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background-image: url('https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/466458716_869630271997402_9083455242095747570_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=dNEe5EZGq5gQ7kNvgHUbXVU&_nc_oc=AdiK6xyn3f9rhAh5RUvNyPF_1lVwgpI7fvjAIku_rdZAAf_XeldRO7rpn7eGd9dBf75CPO4fsxIvpIIzPWkYGsNU&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=ACngSlc3OEVAckWpcnA64Qd&oh=00_AYAJ_1ftU1H9QIQAD22G7GW2wJbSDL3YrSKg33xbkkDVpA&oe=67ACD92D');
+            background-image: url('https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/466458716_869630271997402_9083455242095747570_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeESqb9kOvO31JySvEXLdZNMj9_UUMw76LSP39RQzDvotLTYI6P6-l4uJv4JGcamYs6NmpBqWpGfgMmGo3bUH6xY&_nc_ohc=rlyV0WYTny8Q7kNvgFOwbbO&_nc_oc=AdjI8HW7RcI6wIm4XhkvY_fj61mLMzEBRsbO_nXINj6VHUFJD7g0U6OmJXXT5BlDqujyOpvJYodsyg6sF6LUyt6H&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=ACMC7skbT0YfcUUfp_faqqI&oh=00_AYC1aFoe2OUNBOXnjtqe7kTyI4FDpUF39uIOOrUisC0Sng&oe=67BF866D');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -241,95 +251,95 @@
             background-color: #0056b3;
             transform: scale(1.05);
         }
+
+        .plant {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 
 <body>
     <div class="container" id="container">
         <div class="form-container sign-up-container">
-            <form method="POST" action="{{ route('register') }}">
-                @csrf
-
-                <!-- Name -->
-                <div>
-                    <x-input-label for="name" :value="__('Name')" />
-                    <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-                    <x-input-error :messages="$errors->get('name')" class="mt-2" />
+        <form method="POST" action="{{ route('login') }}">
+                                    @csrf
+                                    <h1>Sign in</h1>
+                                    
+                                    @if(session('error'))
+            <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+                <div id="errorToast" class="toast show fade bg-danger text-white" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header bg-danger text-white">
+                        <strong class="me-auto">Error</strong>
+                        <small>Just now</small>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="toast" aria-label="Close"></button>
+                    </div>
+                    <div class="toast-body">
+                        {{ session('error') }}
+                    </div>
                 </div>
+            </div>
+            @endif
 
-                <!-- Email Address -->
-                <div class="mt-4">
-                    <x-input-label for="email" :value="__('Email')" />
-                    <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-                    <x-input-error :messages="$errors->get('email')" class="mt-2" />
-                </div>
 
-                <!-- Password -->
-                <div class="mt-4">
-                    <x-input-label for="password" :value="__('Password')" />
-                    <x-text-input id="password" class="block mt-1 w-full"
-                                    type="password"
-                                    name="password"
-                                    required autocomplete="new-password" />
-                    <x-input-error :messages="$errors->get('password')" class="mt-2" />
-                </div>
+                                    <div class="social-container">
+                                       
+                                    </div>
+                                    <span>Login admin account</span>
+                                    <input type="email" placeholder="Email" name="email" required />
+                                    <input type="password" placeholder="Password" name="password" required />
+                                    <a href="{{ route('password.request') }}">Forgot your password?</a>
+                                    <button type="submit" class="btn">Sign In</button>
+                                </form>
 
-                <!-- Confirm Password -->
-                <div class="mt-4">
-                    <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-                    <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                                    type="password"
-                                    name="password_confirmation" required autocomplete="new-password" />
-                    <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-                </div>
-
-                <!-- Register Button -->
-                <div class="mt-4">
-                    
-                <x-primary-button class="w-full bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
-                        {{ __('Register') }}
+                        </div>
                         
-                    </x-primary-button>
-                    @if (session('status') == 'verification-link-sent')
-                                <div class="alert alert-success">
-                                    A verification email has been sent to your email address.
-                                </div>
-                    @endif
-                </div>
+                        
+                        
+                       
 
-                            </form>
-                        </div>
                         <div class="form-container sign-in-container">
-                            <form method="POST" action="{{ route('login') }}">
-                                @csrf
-                                <h1>Sign in</h1>
-                                <div class="social-container">
-                                            
+                                <form method="POST" action="{{ route('login') }}">
+                                    @csrf
+                                    <h1>View only</h1>
+
+                                    <img src="https://i.pinimg.com/originals/e8/88/d4/e888d4feff8fd5ff63a965471a94b874.gif" alt="Google Sign-in" class="plant">
+
+
+                                    <br>
+                                    <span>Sign in only google account</span>
+                                    
+                                   
+
+                                    <div class="social-container">
                                         <a href="{{ route('google.redirect') }}" class="social">
-                                        <i class="fab fa-google-plus-g"></i>
+                                            <i class="fab fa-google-plus-g"></i>
                                         </a>
-                                
-                                </div>
-                                <span>or use your account</span>
-                                <input type="email" placeholder="Email" name="email" required />
-                                <input type="password" placeholder="Password" name="password" required />
-                                <a href="{{ route('password.request') }}">Forgot your password?</a>
-                                <button type="submit" class="btn">Sign In</button>
-                            </form>
-                        </div>
+                                    </div>
+                                    
+                                </form>
+                            </div>
                         <div class="overlay-container">
                             <div class="overlay">
                                 <div class="overlay-panel overlay-left">
                                     <div class="circle-logo"></div>
                                     <h1>Rainwater Catch Basin</h1>
-                                    <p>Already Registered?</p>
-                                    <button class="ghost btn" id="signIn">Sign In</button>
+                                    <p>Go back to previous? </p>
+                                    <button class="ghost btn" id="signIn">Go back</button>
                                 </div>
                                 <div class="overlay-panel overlay-right">
                                     <div class="circle-logo"></div>
                                     <h1>Rainwater Catch Basin</h1>
-                                    <p>Not yet Registered?</p>
-                                    <button class="ghost btn" id="signUp">Sign Up</button>
+                                    <p>Login as admin?</p>
+                                    <button class="ghost btn" id="signUp">Admin login</button>
                                 </div>
                             </div>
                         </div>
@@ -349,7 +359,13 @@
         signInButton.addEventListener('click', () => {
             container.classList.remove("right-panel-active");
         });
+
     </script>
+     <!-- Bootstrap JS -->
+     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        
+
 </body>
 
 </html>
+

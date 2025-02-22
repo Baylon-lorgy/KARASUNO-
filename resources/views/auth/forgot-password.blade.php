@@ -236,25 +236,23 @@
     <div class="container" id="container">
         
     <h2>Forgot Password</h2>
-    <p>Enter your email to receive a password reset link.</p>
+    <p>Enter your email to Rainwater Catch Basin <br>Team for Password Changes.</p>
 
     @if(session('status'))
         <div class="alert alert-success">{{ session('status') }}</div>
     @endif
 
-    <form method="POST" action="{{ route('password.email') }}">
-        @csrf
-        <div class="mb-3">
-            <label for="email" class="form-label">Email Address</label>
-            <input type="email" name="email" class="form-control" required>
-        </div>
+    <form action="{{ route('password.reset.request') }}" method="POST">
+    @csrf
+    <div class="mb-3">
+        <label for="email" class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-control" required>
+    </div>
 
-        @error('email')
-            <div class="text-danger">{{ $message }}</div>
-        @enderror
-
-        <button type="submit" class="btn btn-primary">Send Password Reset Link</button>
-    </form>
+    <button type="submit" class="btn btn-primary">
+        Send Email Request
+    </button>
+</form>
         <div class="overlay-container">
             <div class="overlay">
                 
@@ -272,18 +270,20 @@
     
 
     <script>
-        const signUpButton = document.getElementById('signUp');
-        const signInButton = document.getElementById('signIn');
-        const container = document.getElementById('container');
-
-        signUpButton.addEventListener('click', () => {
-            container.classList.add("right-panel-active");
-        });
-
-        signInButton.addEventListener('click', () => {
-            container.classList.remove("right-panel-active");
-        });
-    </script>
+    function sendEmail() {
+        const userEmail = document.querySelector('input[name="email"]').value;
+        if (!userEmail) {
+            alert("Please enter your email before sending the request.");
+            return;
+        }
+        
+        const recipient = "2201105765@student.buksu.edu.ph";
+        const subject = encodeURIComponent("Password Reset Request");
+        const body = encodeURIComponent(`Hello Team,\n\nI would like to request a password reset for my account associated with this email: ${userEmail}.\n\nThank you.`);
+        
+        window.location.href = `mailto:${recipient}?subject=${subject}&body=${body}`;
+    }
+</script>
 </body>
 
 </html>

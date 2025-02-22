@@ -45,28 +45,17 @@
             gap: 20px;
         }
         .circle-logo {
-                position: relative;
-                width: 120px;
-                height: 120px;
-                border-radius: 50%;
-                background-image: url('https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/466458716_869630271997402_9083455242095747570_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_eui2=AeESqb9kOvO31JySvEXLdZNMj9_UUMw76LSP39RQzDvotLTYI6P6-l4uJv4JGcamYs6NmpBqWpGfgMmGo3bUH6xY&_nc_ohc=rlyV0WYTny8Q7kNvgFvBNeG&_nc_oc=AdgPVF6VKBU-nwbGgStd-ERLUjRG3C4h_5zN5Ci05DQjbbbvvKI_nn2lmefpL9yAUVZZ_QK5QHsRQkwjEIZ_Jq7c&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=Ajha4Quz3fTI-Pe72NpuwFE&oh=00_AYB-GNyOG14HGfOCLocPB7LYXj-otc1krcII8_R5OhPawQ&oe=67BFBEAD');
-                background-size: cover;
-                background-position: center;
-                z-index: 1; /* Ensures it's above the leaf */
-                }
-        .leaf {
-                position: absolute;
-                right: 1184px; /* Adjust this value to move it more to the right */
-                top: 250px; /* Adjust this value to position it properly */
-                width: 80px; /* Adjust size if needed */
-                height: 80px;
-                background-image: url('https://i.pinimg.com/originals/dd/fa/f1/ddfaf1bff8a147958b585cc472f034c6.gif');
-                background-size: cover;
-                background-position: center;
-                z-index: 0; /* Ensures it's behind the logo */
-                }
-
-       
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background-image: url('https://scontent.fcgy1-3.fna.fbcdn.net/v/t39.30808-6/466458716_869630271997402_9083455242095747570_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=dNEe5EZGq5gQ7kNvgHUbXVU&_nc_oc=AdiK6xyn3f9rhAh5RUvNyPF_1lVwgpI7fvjAIku_rdZAAf_XeldRO7rpn7eGd9dBf75CPO4fsxIvpIIzPWkYGsNU&_nc_zt=23&_nc_ht=scontent.fcgy1-3.fna&_nc_gid=ACngSlc3OEVAckWpcnA64Qd&oh=00_AYAJ_1ftU1H9QIQAD22G7GW2wJbSDL3YrSKg33xbkkDVpA&oe=67ACD92D');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
         h3 {
             font-size: 2rem;
             font-weight: 700;
@@ -114,12 +103,10 @@
     <div class="main-container">
         <!-- Left Side: Logo & Buttons -->
         <div class="left-container">
-            <div class="leaf"></div>
-            
             <div class="circle-logo"></div>
             <h3>Rainwater Catch Basin</h3>
             <div class="btn-container">
-                <a href="{{ route('login') }}" class="btn btn-primary">Get Started</a>
+                <a href="{{ route('dashboard') }}" class="btn btn-primary">Dashboard</a>
             </div>
         </div>
 
