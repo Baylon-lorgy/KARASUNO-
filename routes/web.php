@@ -1,133 +1,62 @@
 <?php
 
-use App\Http\Controllers\AccountController;
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use Illuminate\Support\Facades\Route;
-use Laravel\Socialite\Facades\Socialite;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use App\Http\Controllers\Auth\ForgotPasswordController;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
-use Illuminate\Http\Request;
-use App\Http\Controllers\PasswordResetController;
+use App\Http\Controllers\Admin\WaterScheduleController;
+use App\Http\Controllers\Admin\HistoryController;
+use App\Http\Controllers\Admin\SystemLogController;
+use App\Http\Controllers\Admin\AuthController;
 
-
+// Public routes
 Route::get('/', function () {
     return view('welcome');
-})->name('welcome');
+})->name('homepage');
 
-Route::get('/homepage', function () {
-    return view('homepage');
-})->middleware(['auth', 'verified'])->name('homepage');
+// Guest routes (unauthenticated users only)
+Route::middleware('guest')->group(function () {
+    // Admin login routes
+    Route::get('admin/login', [AuthController::class, 'showLoginForm'])
+        ->name('admin.login');
+    Route::post('admin/login', [AuthController::class, 'login'])
+        ->name('admin.login.store');
+});
 
-Route::get('/viewhomepage', function () {
-    return view('viewhomepage');
-})->middleware(['auth', 'verified'])->name('viewhomepage');
-
-
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
-
-Route::get('/viewdashboard', function () {
-    return view('viewdashboard');
-})->middleware(['auth'])->name('viewdashboard');
-
-
-
-Route::get('/tables', function () {
-    return view('tables');
-})->middleware(['auth', 'verified'])->name('tables');
-
-Route::get('/account', function () {
-    return view('account');
-})->middleware(['auth'])->name('account');
-
-Route::get('/notifications', function () {
-    return view('notifications');
-})->middleware(['auth'])->name('notifications');
-
-Route::post('login', [LoginController::class, 'login'])->name('login');
-
-
-Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-
-Route::post('/password-reset-request', [PasswordResetController::class, 'sendResetRequest'])->name('password.reset.request');
-
-Route::post('/sprinkler/schedule', [SprinklerController::class, 'schedule'])->name('sprinkler.schedule');
-
-
+// Admin routes
+Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function () {
+    // Dashboard
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
+    // Logout
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+    
+    // Water Schedule
+    Route::resource('water-schedule', WaterScheduleController::class)->names([
+        'index' => 'water.schedule',
+        'store' => 'water.schedule.store',
+        'update' => 'water.schedule.update',
+        'destroy' => 'water.schedule.destroy',
+    ]);
+    
+    // History
+    Route::get('/history', [HistoryController::class, 'index'])->name('history');
+    Route::get('/history/export', [HistoryController::class, 'export'])->name('history.export');
+    
+    // System Logs
+    Route::get('/logs', [SystemLogController::class, 'index'])->name('logs');
+    Route::get('/logs/download', [SystemLogController::class, 'download'])->name('logs.download');
+    Route::post('/logs/clear', [SystemLogController::class, 'clear'])->name('logs.clear');
+});
 
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [AccountController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile', [AccountController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [AccountController::class, 'destroy'])->name('profile.destroy');
-    Route::delete('/account', [AccountController::class, 'destroy'])->name('account.destroy');
-    Route::get('/account', [ProfileController::class, 'show'])->name('account');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/profile/update', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile/destroy', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
+        ->name('logout');
+
+    // Profile routes
+    Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
-
-
-//GOOGLE API AUTHENTICATION USER VIEW
-Route::get('/auth/google', function () {
-    return Socialite::driver('google')->redirect();
-})->name('google.redirect');
-
-Route::get('/auth/google/callback', function () {
-    try {
-        $googleUser = Socialite::driver('google')->user();
-        
-        //dd($googleUser); // Debug: Check if this returns user data
-
-        $user = User::updateOrCreate(
-            ['email' => $googleUser->getEmail()],
-            [
-                'name' => $googleUser->getName(),
-                'google_id' => $googleUser->getId(),
-                'password' => bcrypt(str()->random(16)),
-            ]
-        );
-
-        Auth::login($user);
-
-        return redirect('/viewdashboard');
-    } catch (\Exception $e) {
-        dd($e->getMessage()); // Debug: Check for errors
-    }
-})->name('google.callback');
-
-
-
-//ONLY VERIFIED USERS CAN ACCESS THE DASHBOARD/ real gmail verification
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-});
-
-// Route to trigger email verification
-Route::get('/email/verify', function () {
-    return view('auth.verify-email');
-})->middleware('auth')->name('verification.notice');
-
-// Handle email verification
-Route::get('/email/verify/{id}/{hash}', function (EmailVerificationRequest $request) {
-    $request->fulfill();
-    return redirect('/dashboard')->with('success', 'Email verified successfully!');
-})->middleware(['auth', 'signed'])->name('verification.verify');
-
-// Resend email verification
-Route::post('/email/verification-notification', function (Request $request) {
-    $request->user()->sendEmailVerificationNotification();
-    return back()->with('message', 'Verification link sent!');
-})->middleware(['auth', 'throttle:6,1'])->name('verification.send');
 
 require __DIR__.'/auth.php';
-

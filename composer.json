@@ -10,19 +10,21 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
-        "laravel/framework": "^11.31",
-        "laravel/socialite": "^5.18",
-        "laravel/tinker": "^2.9"
+        "bluerhinos/phpmqtt": "^1.0",
+        "mongodb/laravel-mongodb": "^4.0",
+        "laravel/framework": "^11.0",
+        "laravel/tinker": "^2.10.1",
+        "php-mqtt/client": "^2.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
         "laravel/breeze": "^2.3",
-        "laravel/pail": "^1.1",
+        "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
-        "laravel/sail": "^1.26",
+        "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.1",
-        "phpunit/phpunit": "^11.0.1"
+        "nunomaduro/collision": "^8.6",
+        "phpunit/phpunit": "^11.5.3"
     },
     "autoload": {
         "psr-4": {
@@ -72,12 +74,5 @@
         }
     },
     "minimum-stability": "stable",
-    "prefer-stable": true,
-    "repositories": {
-        "packagist": {
-            "type": "composer",
-            "url": "https://packagist.org"
-        }
-    }
-
+    "prefer-stable": true
 }
