@@ -355,10 +355,133 @@
                 padding: 1rem;
             }
         }
+
+        /* Notification Badge Animation */
+        @keyframes notification-pulse {
+            0% {
+                transform: scale(1) translate(50%, -50%);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.4);
+            }
+            70% {
+                transform: scale(1.1) translate(50%, -50%);
+                box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+            }
+            100% {
+                transform: scale(1) translate(50%, -50%);
+                box-shadow: 0 0 0 0 rgba(220, 53, 69, 0);
+            }
+        }
+
+        .notification-badge {
+            animation: notification-pulse 1.5s infinite;
+            transform-origin: center;
+        }
+
+        .notification-item {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            transition: background-color 0.2s;
+        }
+
+        .notification-item:hover {
+            background-color: rgba(0,0,0,0.02);
+        }
+
+        .notification-item.unread {
+            background-color: rgba(13, 110, 253, 0.05);
+        }
+
+        .notification-item:last-child {
+            border-bottom: none;
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+
+        .notification-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: rgba(13, 110, 253, 0.1);
+            color: #0d6efd;
+        }
+
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-text p {
+            margin: 0;
+            font-size: 0.875rem;
+            color: #1e2022;
+        }
+
+        .notification-text small {
+            color: #77838f;
+        }
+
+        /* Loading Overlay */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            backdrop-filter: blur(5px);
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid var(--background-light);
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .loading-text {
+            position: absolute;
+            margin-top: 80px;
+            color: var(--primary-color);
+            font-weight: 500;
+            font-size: 1.1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Page Transition Animation */
+        .page-transition {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 
 <body>
+    <!-- Loading Overlay -->
+    <div class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
     <!-- Sidebar -->
     <aside class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -392,7 +515,13 @@
                     <a href="{{ route('admin.history') }}" class="nav-link {{ request()->routeIs('admin.history') ? 'active' : '' }}">
                         <i class="bi bi-clock-history"></i>
                         <span>History</span>
-            </a>
+                    </a>
+        </li>
+        <li class="nav-item">
+                    <a href="{{ route('admin.reports.index') }}" class="nav-link {{ request()->routeIs('admin.reports.*') ? 'active' : '' }}">
+                        <i class="bi bi-file-earmark-text"></i>
+                        <span>Generate Reports</span>
+                    </a>
         </li>
     </ul>
         </nav>
@@ -414,23 +543,23 @@
                 <div class="dropdown">
                     <button class="btn btn-link p-0 position-relative" data-bs-toggle="dropdown">
                         <i class="bi bi-bell" style="font-size: 1.25rem;"></i>
-                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            3
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger notification-badge" id="notificationBadge" style="display: none;">
+                            0
                         </span>
                     </button>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <h6 class="dropdown-header">Notifications</h6>
-                        <a class="dropdown-item" href="#">
-                            <i class="bi bi-water"></i>
-                            <div>
-                                <p class="mb-0">Water level is high</p>
-                                <small class="text-muted">5 minutes ago</small>
-                </div>
-              </a>
-                        <div class="dropdown-divider"></div>
-                        <a class="dropdown-item text-center" href="#">
-                            <small>View all notifications</small>
-                        </a>
+                    <div class="dropdown-menu dropdown-menu-end" style="width: 320px; max-height: 400px; overflow-y: auto;">
+                        <div class="d-flex justify-content-between align-items-center px-3 py-2 border-bottom">
+                            <h6 class="dropdown-header m-0">Notifications</h6>
+                            <button class="btn btn-link text-muted p-0" id="markAllRead">
+                                <small>Mark all as read</small>
+                            </button>
+                        </div>
+                        <div id="notificationList">
+                            <!-- Notifications will be dynamically inserted here -->
+                        </div>
+                        <div class="text-center p-2 border-top" id="noNotifications">
+                            <small class="text-muted">No new notifications</small>
+                        </div>
                     </div>
                 </div>
 
@@ -544,6 +673,64 @@
                 behavior: 'smooth'
             });
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const notificationBadge = document.getElementById('notificationBadge');
+        const notificationList = document.getElementById('notificationList');
+        const noNotifications = document.getElementById('noNotifications');
+        let notificationCount = 0;
+
+        // Function to update notification count
+        function updateNotificationCount(count) {
+            notificationCount += count;
+            if (notificationCount > 0) {
+                notificationBadge.style.display = 'flex';
+                notificationBadge.textContent = notificationCount > 9 ? '9+' : notificationCount;
+                noNotifications.style.display = 'none';
+            } else {
+                notificationBadge.style.display = 'none';
+                noNotifications.style.display = 'block';
+            }
+        }
+
+        // Function to add a new notification
+        function addNotification(notification) {
+            const notificationItem = document.createElement('div');
+            notificationItem.className = 'notification-item unread';
+            notificationItem.innerHTML = `
+                <div class="notification-content">
+                    <div class="notification-icon">
+                        <i class="bi ${notification.icon || 'bi-bell'}"></i>
+                    </div>
+                    <div class="notification-text">
+                        <p>${notification.message}</p>
+                        <small>${notification.time || 'Just now'}</small>
   </script>
+
+    <!-- Loading Animation -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingOverlay = document.querySelector('.loading-overlay');
+            const mainContent = document.querySelector('.main-content');
+            
+            // Show loading overlay when clicking on links
+            document.addEventListener('click', function(e) {
+                if (e.target.tagName === 'A' && !e.target.hasAttribute('data-bs-toggle')) {
+                    loadingOverlay.style.display = 'flex';
+                }
+            });
+
+            // Hide loading overlay when page is loaded
+            window.addEventListener('load', function() {
+                loadingOverlay.style.display = 'none';
+                mainContent.classList.add('page-transition');
+            });
+
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', function() {
+                loadingOverlay.style.display = 'flex';
+            });
+        });
+    </script>
 </body>
 </html>

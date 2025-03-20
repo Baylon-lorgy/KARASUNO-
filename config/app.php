@@ -156,7 +156,7 @@ return [
         /*
          * Package Service Providers...
          */
-        MongoDB\Laravel\MongoDBServiceProvider::class,
+        Barryvdh\DomPDF\ServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -170,6 +170,6 @@ return [
     ])->toArray(),
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'Example' => App\Facades\Example::class,
+        'PDF' => Barryvdh\DomPDF\Facade\Pdf::class,
     ])->toArray(),
 ];

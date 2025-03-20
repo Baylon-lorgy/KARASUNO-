@@ -10,10 +10,11 @@
     "license": "MIT",
     "require": {
         "php": "^8.2",
+        "barryvdh/laravel-dompdf": "^3.1",
         "bluerhinos/phpmqtt": "^1.0",
-        "mongodb/laravel-mongodb": "^4.0",
         "laravel/framework": "^11.0",
         "laravel/tinker": "^2.10.1",
+        "mongodb/laravel-mongodb": "^4.0",
         "php-mqtt/client": "^2.2"
     },
     "require-dev": {

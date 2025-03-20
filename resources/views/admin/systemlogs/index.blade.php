@@ -3,6 +3,69 @@
 @section('title', 'System Logs - Rainwater Catch Basin')
 
 @section('content')
+<style>
+    /* Existing styles remain unchanged */
+    
+    /* Water Usage Stats Card */
+    .stats-card {
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 1rem;
+        margin-bottom: 1.5rem;
+    }
+    
+    .stat-item {
+        padding: 1rem;
+        text-align: center;
+        border-right: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    .stat-item:last-child {
+        border-right: none;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        color: var(--primary-color);
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+    }
+
+    /* Log Type Badges */
+    .badge-water-level {
+        background: linear-gradient(45deg, #2196F3, #00BCD4);
+    }
+    
+    .badge-water-detection {
+        background: linear-gradient(45deg, #4CAF50, #8BC34A);
+    }
+    
+    .badge-system {
+        background: linear-gradient(45deg, #9C27B0, #E91E63);
+    }
+
+    .badge-performance {
+        background: linear-gradient(45deg, #FF9800, #FF5722);
+    }
+
+    /* Filter Controls */
+    .filter-controls {
+        background: rgba(255, 255, 255, 0.8);
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .date-filter {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+</style>
+
 <div class="container-fluid py-4">
     <!-- Error Handling for Session Messages -->
     @if(session('success') || session('error') || session('warning'))
@@ -15,29 +78,40 @@
         </div>
     @endif
 
-    <!-- System Status Alert -->
-    <div id="systemStatusAlert" style="display: none;" class="alert alert-info alert-dismissible fade show" role="alert">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-info-circle-fill me-2"></i>
-            <span id="systemStatusMessage"></span>
+    <!-- Water Usage Statistics -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card stats-card">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3 stat-item">
+                            <div class="stat-value" id="totalWaterUsage">0L</div>
+                            <div class="stat-label">Total Water Usage</div>
+                        </div>
+                        <div class="col-md-3 stat-item">
+                            <div class="stat-value" id="avgDailyUsage">0L</div>
+                            <div class="stat-label">Average Daily Usage</div>
+                        </div>
+                        <div class="col-md-3 stat-item">
+                            <div class="stat-value" id="detectionRate">0%</div>
+                            <div class="stat-label">Water Detection Rate</div>
+                        </div>
+                        <div class="col-md-3 stat-item">
+                            <div class="stat-value" id="systemUptime">0h</div>
+                            <div class="stat-label">System Uptime</div>
                     </div>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
-
-    <!-- Connection Status -->
-    <div id="connectionStatus" style="display: none;" class="alert alert-warning alert-dismissible fade show" role="alert">
-        <div class="d-flex align-items-center">
-            <i class="bi bi-wifi-off me-2"></i>
-            <span>Connection lost. Retrying...</span>
+                </div>
+            </div>
         </div>
                     </div>
 
-    <!-- Header Card -->
+    <!-- Header Card with Enhanced Controls -->
     <div class="row mb-4">
         <div class="col-12">
             <div class="card">
                 <div class="card-body p-3">
-                    <div class="row align-items-center">
+                    <div class="row align-items-center mb-3">
                         <div class="col-md-8">
                             <div class="numbers">
                                 <h5 class="font-weight-bolder mb-0">
@@ -46,51 +120,80 @@
                                         <i class="bi bi-journal-text"></i>
                                     </span>
                                 </h5>
-                                <p class="text-sm mb-0 text-muted">Monitor and manage all system activities</p>
+                                <p class="text-sm mb-0 text-muted">Monitor and analyze water usage and system performance</p>
                     </div>
                 </div>
-                        <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                        <div class="col-md-4 text-md-end">
                             <div class="d-flex gap-2 justify-content-md-end">
                                 <div class="dropdown">
                                     <button class="btn btn-primary btn-sm mb-0 dropdown-toggle d-flex align-items-center" 
                                             type="button" 
                                             data-bs-toggle="dropdown">
                                         <i class="bi bi-download me-2"></i>
-                                        Download
+                                        Export Data
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li>
-                                            <a class="dropdown-item" href="#" onclick="downloadSelected()">
+                                            <a class="dropdown-item" href="#" onclick="exportData('selected')">
                                                 <i class="bi bi-check2-square me-2"></i>
-                                                Download Selected
+                                                Export Selected
                                             </a>
                                         </li>
                                         <li>
-                                            <a class="dropdown-item" href="{{ route('admin.logs.download') }}">
+                                            <a class="dropdown-item" href="#" onclick="exportData('filtered')">
+                                                <i class="bi bi-funnel me-2"></i>
+                                                Export Filtered
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item" href="#" onclick="exportData('all')">
                                                 <i class="bi bi-download me-2"></i>
-                                                Download All
+                                                Export All
                                             </a>
                                         </li>
                                     </ul>
                 </div>
-                                <form action="{{ route('admin.logs.clear') }}" method="POST" class="d-inline">
-                                    @csrf
-                                    <button type="submit" 
-                                            class="btn btn-danger btn-sm mb-0 d-flex align-items-center"
-                                            onclick="return confirm('Are you sure you want to clear all logs?')">
-                                        <i class="bi bi-trash me-2"></i>
-                                        Clear
-                                    </button>
-                                </form>
             </div>
         </div>
+                    </div>
+
+                    <!-- Filter Controls -->
+                    <div class="filter-controls">
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <div class="date-filter">
+                                    <label class="form-label mb-0">Date Range:</label>
+                                    <input type="date" class="form-control form-control-sm" id="startDate">
+                                    <span>to</span>
+                                    <input type="date" class="form-control form-control-sm" id="endDate">
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Log Type</label>
+                                <select class="form-select form-select-sm" id="logType">
+                                    <option value="all">All Logs</option>
+                                    <option value="water-level">Water Level</option>
+                                    <option value="water-detection">Water Detection</option>
+                                    <option value="performance">Performance</option>
+                                    <option value="system">System</option>
+                                </select>
+                            </div>
+                            <div class="col-md-4 text-end">
+                                <button class="btn btn-primary btn-sm" onclick="applyFilters()">
+                                    <i class="bi bi-funnel me-2"></i>Apply Filters
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" onclick="resetFilters()">
+                                    <i class="bi bi-x-circle me-2"></i>Reset
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Logs Timeline -->
+    <!-- Logs Timeline with Enhanced Categories -->
     <div class="row">
         <div class="col-12">
             <div class="card">
@@ -100,7 +203,7 @@
                             <h6 class="mb-0">System Logs</h6>
                             <p class="text-sm mb-0 text-muted">
                                 <i class="bi bi-clock me-1"></i>
-                                System events and activities log
+                                Water usage and system events log
                             </p>
                         </div>
                         <div class="d-flex gap-2">
@@ -122,19 +225,19 @@
                 <div class="card-body px-0 pt-0 pb-2">
                     @if(!isset($logs))
                         <div class="text-center py-5">
-                            <div class="icon icon-shape bg-gradient-danger shadow text-center mx-auto mb-3" style="width: 50px; height: 50px; border-radius: 50%;">
-                                <i class="bi bi-exclamation-triangle text-lg opacity-10" aria-hidden="true"></i>
+                            <div class="icon icon-shape bg-gradient-danger shadow text-center mx-auto mb-3">
+                                <i class="bi bi-exclamation-triangle text-lg opacity-10"></i>
                             </div>
                             <h6 class="text-danger">Error Loading Logs</h6>
                             <p class="text-sm text-muted">There was an error loading the system logs. Please try refreshing the page.</p>
                         </div>
                     @elseif(empty($logs))
                         <div class="text-center py-5">
-                            <div class="icon icon-shape bg-gradient-secondary shadow text-center mx-auto mb-3" style="width: 50px; height: 50px; border-radius: 50%;">
-                                <i class="bi bi-journal-x text-lg opacity-10" aria-hidden="true"></i>
+                            <div class="icon icon-shape bg-gradient-secondary shadow text-center mx-auto mb-3">
+                                <i class="bi bi-journal-x text-lg opacity-10"></i>
                             </div>
                             <h6 class="text-secondary">No System Logs</h6>
-                            <p class="text-sm text-muted">System events will appear here</p>
+                            <p class="text-sm text-muted">Water usage and system events will appear here</p>
                         </div>
                     @else
                         <div class="timeline-modern p-4" id="logsContainer">
@@ -145,308 +248,60 @@
                                 </div>
                             </div>
                                 @foreach($logs as $log)
-                                <div class="timeline-block" data-log-id="{{ $log['id'] ?? '' }}">
-                                    <div class="timeline-checkbox">
-                                        <div class="form-check">
-                                            <input class="form-check-input log-checkbox" type="checkbox" value="{{ $log['id'] ?? '' }}">
-                                        </div>
-                                    </div>
-                                    <div class="timeline-step bg-gradient-{{ isset($log['level']) && $log['level'] === 'error' ? 'danger' : (isset($log['level']) && $log['level'] === 'warning' ? 'warning' : 'success') }}">
-                                        <i class="bi bi-{{ isset($log['level']) && $log['level'] === 'error' ? 'exclamation-circle' : (isset($log['level']) && $log['level'] === 'warning' ? 'exclamation-triangle' : 'info-circle') }}"></i>
-                                    </div>
-                                    <div class="timeline-content">
-                                        <div class="d-flex justify-content-between mb-1">
-                                            <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $log['message'] ?? 'No message' }}</h6>
-                                            <div class="d-flex align-items-center">
-                                                <span class="badge bg-gradient-{{ isset($log['level']) && $log['level'] === 'error' ? 'danger' : (isset($log['level']) && $log['level'] === 'warning' ? 'warning' : 'success') }} me-2">
-                                                    {{ ucfirst($log['level'] ?? 'info') }}
-                                        </span>
-                                                <span class="text-muted text-xs" id="timestamp-{{ $log['id'] ?? '' }}">
-                                                    {{ isset($log['created_at']) ? \Carbon\Carbon::parse($log['created_at'])->format('M d, Y H:i:s') : 'No timestamp' }}
-                                        </span>
-                                            </div>
-                                        </div>
-                                        <p class="text-sm mb-0">
-                                            {{ $log['details'] ?? 'No details available' }}
-                                        </p>
+                            <div class="timeline-block" data-log-id="{{ $log['id'] ?? '' }}" data-log-type="{{ $log['type'] ?? 'system' }}">
+                                <div class="timeline-checkbox">
+                                    <div class="form-check">
+                                        <input class="form-check-input log-checkbox" type="checkbox" value="{{ $log['id'] ?? '' }}">
                                     </div>
                                 </div>
+                                <div class="timeline-step bg-gradient-{{ 
+                                    isset($log['type']) && $log['type'] === 'water-level' ? 'info' : 
+                                    (isset($log['type']) && $log['type'] === 'water-detection' ? 'success' : 
+                                    (isset($log['type']) && $log['type'] === 'performance' ? 'warning' : 'primary')) 
+                                }}">
+                                    <i class="bi bi-{{ 
+                                        isset($log['type']) && $log['type'] === 'water-level' ? 'water' : 
+                                        (isset($log['type']) && $log['type'] === 'water-detection' ? 'droplet' : 
+                                        (isset($log['type']) && $log['type'] === 'performance' ? 'graph-up' : 'gear')) 
+                                    }}"></i>
+                                </div>
+                                <div class="timeline-content">
+                                    <div class="d-flex justify-content-between mb-1">
+                                        <h6 class="text-dark text-sm font-weight-bold mb-0">{{ $log['message'] ?? 'No message' }}</h6>
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge badge-{{ $log['type'] ?? 'system' }} me-2">
+                                                {{ ucfirst($log['type'] ?? 'system') }}
+                                            </span>
+                                            <span class="text-muted text-xs" id="timestamp-{{ $log['id'] ?? '' }}">
+                                                {{ isset($log['created_at']) ? \Carbon\Carbon::parse($log['created_at'])->format('M d, Y H:i:s') : 'No timestamp' }}
+                                        </span>
+                                        </div>
+                                    </div>
+                                    <p class="text-sm mb-0">
+                                        {{ $log['details'] ?? 'No details available' }}
+                                    </p>
+                                    @if(isset($log['data']))
+                                    <div class="mt-2">
+                                        <small class="text-muted">Additional Data:</small>
+                                        <div class="text-sm">
+                                            @foreach($log['data'] as $key => $value)
+                                            <span class="badge bg-light text-dark me-2">
+                                                {{ $key }}: {{ $value }}
+                                        </span>
                                 @endforeach
-                        </div>
+                                        </div>
+                                    </div>
+                                    @endif
+                                </div>
+                    </div>
+                            @endforeach
+                    </div>
                     @endif
-
-                    <!-- Loading Indicator -->
-                    <div id="loadingIndicator" style="display: none;" class="text-center py-4">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="text-sm text-muted mt-2">Loading logs...</p>
-                    </div>
-
-                    <!-- Error Message -->
-                    <div id="errorMessage" style="display: none;" class="text-center py-4">
-                        <div class="icon icon-shape bg-gradient-danger shadow text-center mx-auto mb-3" style="width: 50px; height: 50px; border-radius: 50%;">
-                            <i class="bi bi-exclamation-circle text-lg opacity-10" aria-hidden="true"></i>
-                        </div>
-                        <h6 class="text-danger">Error</h6>
-                        <p class="text-sm text-muted" id="errorMessageText"></p>
-                        <button class="btn btn-sm btn-outline-primary mt-3" onclick="retryLoading()">
-                            <i class="bi bi-arrow-repeat me-2"></i>Retry
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-
-@push('styles')
-<style>
-/* Timeline Modern Styles */
-.timeline-modern {
-    position: relative;
-    padding: 1rem 0;
-    scrollbar-width: thin;
-    scrollbar-color: var(--primary-color) rgba(0,0,0,0.1);
-}
-
-.timeline-modern::-webkit-scrollbar {
-    width: 6px;
-}
-
-.timeline-modern::-webkit-scrollbar-track {
-    background: rgba(0,0,0,0.1);
-    border-radius: 10px;
-}
-
-.timeline-modern::-webkit-scrollbar-thumb {
-    background: var(--primary-color);
-    border-radius: 10px;
-}
-
-.timeline-modern::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 3.75rem;
-    height: 100%;
-    border-left: 2px dashed rgba(0,0,0,0.1);
-}
-
-.timeline-block {
-    position: relative;
-    display: flex;
-    align-items: flex-start;
-    margin-bottom: 1.5rem;
-    gap: 1rem;
-    padding-right: 1rem;
-}
-
-.timeline-block:last-child {
-    margin-bottom: 0;
-}
-
-.timeline-checkbox {
-    padding-top: 1rem;
-    opacity: 0.7;
-    transition: all 0.3s ease;
-}
-
-.timeline-checkbox:hover {
-    opacity: 1;
-}
-
-.timeline-step {
-    width: 3.5rem;
-    height: 3.5rem;
-    border-radius: 1rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    position: relative;
-    z-index: 1;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.12);
-    transition: all 0.3s ease;
-}
-
-.timeline-step:hover {
-    transform: scale(1.1);
-}
-
-.timeline-step i {
-    font-size: 1.25rem;
-    color: white;
-}
-
-.timeline-content {
-    flex-grow: 1;
-    padding: 1.25rem;
-    background: rgba(255,255,255,0.8);
-    backdrop-filter: blur(6px);
-    border-radius: 1rem;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    border: 1px solid rgba(0,0,0,0.05);
-    transition: all 0.3s ease;
-}
-
-.timeline-content:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-}
-
-/* Form Check Styles */
-.form-check-input {
-    cursor: pointer;
-    border-color: var(--primary-color);
-}
-
-.form-check-input:checked {
-    background-color: var(--primary-color);
-    border-color: var(--primary-color);
-}
-
-/* Refresh Button Animation */
-@keyframes spin {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-.refreshing i {
-    animation: spin 1s linear infinite;
-}
-
-/* Alert Styles */
-.alert {
-    border: none;
-    border-radius: 1rem;
-    padding: 1rem;
-    margin-bottom: 1rem;
-    backdrop-filter: blur(6px);
-}
-
-.alert-success {
-    background: rgba(40, 167, 69, 0.1);
-    border: 1px solid rgba(40, 167, 69, 0.2);
-    color: #28a745;
-}
-
-.alert-danger {
-    background: rgba(220, 53, 69, 0.1);
-    border: 1px solid rgba(220, 53, 69, 0.2);
-    color: #dc3545;
-}
-
-/* Button Styles */
-.btn {
-    border-radius: 0.75rem;
-    padding: 0.625rem 1.25rem;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.btn:hover {
-    transform: translateY(-2px);
-}
-
-.btn-sm {
-    padding: 0.5rem 1rem;
-    font-size: 0.875rem;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .timeline-modern::before {
-        left: 1.5rem;
-    }
-    
-    .timeline-step {
-        width: 3rem;
-        height: 3rem;
-    }
-    
-    .timeline-step i {
-        font-size: 1rem;
-    }
-    
-    .timeline-content {
-        padding: 1rem;
-    }
-}
-
-/* Selection Styles */
-.timeline-block.selected .timeline-content {
-    border: 2px solid var(--success-color);
-    background: rgba(var(--success-color-rgb), 0.05);
-}
-
-.timeline-block.selected .timeline-step {
-    border: 2px solid var(--success-color);
-}
-
-.selection-controls {
-    transition: all 0.3s ease;
-}
-
-.selection-controls.show {
-    display: flex !important;
-    align-items: center;
-    animation: slideIn 0.3s ease;
-}
-
-@keyframes slideIn {
-    from { transform: translateX(20px); opacity: 0; }
-    to { transform: translateX(0); opacity: 1; }
-}
-
-/* Checkbox Styles */
-.form-check-input:checked {
-    background-color: var(--success-color);
-    border-color: var(--success-color);
-}
-
-/* Error States */
-.error-state {
-    color: var(--danger);
-    background-color: var(--danger-bg);
-    border: 1px solid var(--danger-border);
-}
-
-/* Loading States */
-.loading-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(255, 255, 255, 0.8);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 1000;
-}
-
-/* Status Indicators */
-#connectionStatus {
-    position: fixed;
-    bottom: 1rem;
-    right: 1rem;
-    z-index: 1050;
-    animation: slideIn 0.3s ease;
-}
-
-/* System Status Alert */
-#systemStatusAlert {
-    margin-bottom: 1rem;
-    animation: slideDown 0.3s ease;
-}
-
-@keyframes slideDown {
-    from { transform: translateY(-20px); opacity: 0; }
-    to { transform: translateY(0); opacity: 1; }
-}
-</style>
-@endpush
 
 @push('scripts')
 <script>
@@ -749,6 +604,107 @@ function clearSelection() {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
 }
+
+// Add new functions for water usage logging
+function updateWaterUsageStats() {
+    fetch('/api/water-usage-stats')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('totalWaterUsage').textContent = `${data.totalUsage}L`;
+            document.getElementById('avgDailyUsage').textContent = `${data.avgDailyUsage}L`;
+            document.getElementById('detectionRate').textContent = `${data.detectionRate}%`;
+            document.getElementById('systemUptime').textContent = `${data.uptime}h`;
+        })
+        .catch(error => console.error('Error fetching water usage stats:', error));
+}
+
+function exportData(type) {
+    let endpoint = '/api/logs/export';
+    let data = {
+        type: type,
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        logType: document.getElementById('logType').value
+    };
+
+    if (type === 'selected') {
+        const selectedLogs = Array.from(document.querySelectorAll('.log-checkbox:checked'))
+            .map(checkbox => checkbox.value);
+        data.selectedLogs = selectedLogs;
+    }
+
+    fetch(endpoint, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.blob())
+    .then(blob => {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `water-usage-logs-${new Date().toISOString().slice(0,10)}.csv`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+    })
+    .catch(error => {
+        console.error('Error exporting data:', error);
+        showAlert('Error exporting data. Please try again.', 'error');
+    });
+}
+
+function applyFilters() {
+    const filters = {
+        startDate: document.getElementById('startDate').value,
+        endDate: document.getElementById('endDate').value,
+        logType: document.getElementById('logType').value
+    };
+
+    // Show loading state
+    document.getElementById('logsContainer').style.opacity = '0.5';
+    
+    fetch('/api/logs/filter', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify(filters)
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Update logs display
+        updateLogsDisplay(data);
+        document.getElementById('logsContainer').style.opacity = '1';
+    })
+    .catch(error => {
+        console.error('Error applying filters:', error);
+        showAlert('Error applying filters. Please try again.', 'error');
+        document.getElementById('logsContainer').style.opacity = '1';
+    });
+}
+
+function resetFilters() {
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('logType').value = 'all';
+    applyFilters();
+}
+
+// Initialize components
+window.addEventListener('load', function() {
+    updateWaterUsageStats();
+    initializeTimelineAnimations();
+    initializeSelectionSystem();
+    
+    // Auto-refresh water usage stats every 5 minutes
+    setInterval(updateWaterUsageStats, 300000);
+});
 </script>
 @endpush 
 @endsection 

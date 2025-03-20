@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\WaterScheduleController;
 use App\Http\Controllers\Admin\HistoryController;
 use App\Http\Controllers\Admin\SystemLogController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\ReportController;
 
 // Public routes
 Route::get('/', function () {
@@ -47,6 +48,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function
     Route::get('/logs', [SystemLogController::class, 'index'])->name('logs');
     Route::get('/logs/download', [SystemLogController::class, 'download'])->name('logs.download');
     Route::post('/logs/clear', [SystemLogController::class, 'clear'])->name('logs.clear');
+
+    // Report routes
+    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
+    Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
 });
 
 Route::middleware('auth')->group(function () {
