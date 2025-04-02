@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'mongodb'),
+    'default' => env('DB_CONNECTION', 'sqlite'),
 
     /*
     |--------------------------------------------------------------------------
@@ -114,8 +114,8 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('DB_DSN'),
-            'database' => env('DB_DATABASE', 'rainwatercatchbasiniot'),
+            'dsn' => env('MONGO_DB_CONNECTION'),
+            'database' => env('MONGO_DB_DATABASE', 'rainwatercatchbasiniot'),
         ],
 
     ],

@@ -2,24 +2,22 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use MongoDB\Laravel\Eloquent\Model;
 
 class AdminSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        Admin::create([
-            'name' => 'Administrator',
-            'email' => 'admin@example.com',
-            'password' => Hash::make('password'),
-            'role' => 'admin',
-            'status' => 'active',
+        User::create([
+            '_id' => new \MongoDB\BSON\ObjectId(),
+            'name' => 'Admin',
+            'email' => 'admin@buksu.edu.ph',
+            'password' => Hash::make('49H4gNXGA5'),
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
     }
-}
+} 

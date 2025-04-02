@@ -1,67 +1,64 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\WaterLevelController;
+use App\Http\Controllers\SensorDataController;
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\WaterScheduleController;
-use App\Http\Controllers\Admin\HistoryController;
-use App\Http\Controllers\Admin\SystemLogController;
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\ReportController;
+use Inertia\Inertia;
 
 // Public routes
 Route::get('/', function () {
-    return view('welcome');
-})->name('homepage');
-
-// Guest routes (unauthenticated users only)
-Route::middleware('guest')->group(function () {
-    // Admin login routes
-    Route::get('admin/login', [AuthController::class, 'showLoginForm'])
-        ->name('admin.login');
-    Route::post('admin/login', [AuthController::class, 'login'])
-        ->name('admin.login.store');
-});
-
-// Admin routes
-Route::prefix('admin')->name('admin.')->middleware('auth:admin')->group(function () {
-    // Dashboard
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
-    // Logout
-    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-    
-    // Water Schedule
-    Route::resource('water-schedule', WaterScheduleController::class)->names([
-        'index' => 'water.schedule',
-        'store' => 'water.schedule.store',
-        'update' => 'water.schedule.update',
-        'destroy' => 'water.schedule.destroy',
+    return Inertia::render('Welcome', [
+        'auth' => auth()->user(),
     ]);
-    
-    // History
-    Route::get('/history', [HistoryController::class, 'index'])->name('history');
-    Route::get('/history/export', [HistoryController::class, 'export'])->name('history.export');
-    
-    // System Logs
-    Route::get('/logs', [SystemLogController::class, 'index'])->name('logs');
-    Route::get('/logs/download', [SystemLogController::class, 'download'])->name('logs.download');
-    Route::post('/logs/clear', [SystemLogController::class, 'clear'])->name('logs.clear');
-
-    // Report routes
-    Route::get('/reports', [ReportController::class, 'index'])->name('reports.index');
-    Route::post('/reports/generate', [ReportController::class, 'generate'])->name('reports.generate');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-        ->name('logout');
+// Guest routes
+Route::middleware('guest')->group(function () {
+    Route::get('login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [LoginController::class, 'login']);
+});
 
-    // Profile routes
+// Protected routes
+Route::middleware('auth')->group(function () {
+    // Admin Dashboard
+    Route::get('/admin/dashboard', function () {
+        return Inertia::render('Admin/Dashboard');
+    })->name('admin.dashboard');
+
+    // System Logs
+    Route::get('/admin/systemlogs', function () {
+        return Inertia::render('Admin/SystemLogs');
+    })->name('admin.systemlogs');
+
+    // Water Schedule
+    Route::get('/admin/waterschedule', function () {
+        return Inertia::render('Admin/WaterSchedule');
+    })->name('admin.waterschedule');
+
+    // History
+    Route::get('/admin/history', function () {
+        return Inertia::render('Admin/History');
+    })->name('admin.history');
+
+    // Reports
+    Route::get('/admin/reports', function () {
+        return Inertia::render('Admin/Reports');
+    })->name('admin.reports');
+
+    // Water Levels
+    Route::get('/water-levels', [WaterLevelController::class, 'index'])->name('water-levels.index');
+    Route::post('/water-levels', [WaterLevelController::class, 'store'])->name('water-levels.store');
+
+    // Profile
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    // Auth
+    Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 });
 
 require __DIR__.'/auth.php';
