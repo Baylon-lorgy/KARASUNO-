@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -33,9 +34,23 @@ class PasswordResetLinkController extends Controller
             'email' => 'required|email',
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
+        // Special handling for admin reset notification
+        if ($request->input('email') === '2201105765@student.buksu.edu.ph') {
+            try {
+                Mail::raw('An admin password reset has been requested. Please check and process this request.', function($message) {
+                    $message->to('2201105765@student.buksu.edu.ph')
+                           ->subject('Admin Password Reset Request');
+                });
+
+                return back()->with('status', 'Reset notification sent to administrator.');
+            } catch (\Exception $e) {
+                throw ValidationException::withMessages([
+                    'email' => ['Unable to send notification. Please try again later.'],
+                ]);
+            }
+        }
+
+        // Regular password reset flow
         $status = Password::sendResetLink(
             $request->only('email')
         );

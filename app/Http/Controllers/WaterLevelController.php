@@ -24,7 +24,11 @@ class WaterLevelController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'level' => 'required|numeric',
+            'water_level' => 'required|numeric|min:0|max:100',
+            'soil_moisture' => 'required|numeric|min:0|max:100',
+            'temperature' => 'required|numeric|min:-50|max:100',
+            'humidity' => 'required|numeric|min:0|max:100',
+            'status' => 'required|string|in:success,failed',
             'sensor_id' => 'required|string',
             'location' => 'required|string',
         ]);

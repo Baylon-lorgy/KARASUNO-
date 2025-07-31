@@ -16,7 +16,7 @@ return [
     |
     */
 
-    'default' => env('DB_CONNECTION', 'sqlite'),
+    'default' => env('DB_CONNECTION', 'mongodb'),
 
     /*
     |--------------------------------------------------------------------------
@@ -114,8 +114,13 @@ return [
 
         'mongodb' => [
             'driver' => 'mongodb',
-            'dsn' => env('MONGO_DB_CONNECTION'),
+            'dsn' => env('MONGO_DB_CONNECTION', 'mongodb+srv://senjiiipatricio:SfYfR8LjMBfKHckZ@rainwatercatchbasiniot.f9402.mongodb.net/rainwatercatchbasiniot?retryWrites=true&w=majority'),
             'database' => env('MONGO_DB_DATABASE', 'rainwatercatchbasiniot'),
+            'options' => [
+                'database' => env('MONGO_DB_DATABASE', 'rainwatercatchbasiniot'),
+                'retryWrites' => true,
+                'w' => 'majority',
+            ],
         ],
 
     ],

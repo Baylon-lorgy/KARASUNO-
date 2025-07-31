@@ -14,14 +14,20 @@ class SensorDataUpdated implements ShouldBroadcast
 
     public $water_level;
     public $soil_moisture;
+    public $temperature;
+    public $humidity;
+    public $water_float_status;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($water_level, $soil_moisture)
+    public function __construct($water_level, $soil_moisture, $temperature, $humidity, $water_float_status)
     {
         $this->water_level = $water_level;
         $this->soil_moisture = $soil_moisture;
+        $this->temperature = $temperature;
+        $this->humidity = $humidity;
+        $this->water_float_status = $water_float_status;
     }
 
     /**
@@ -44,6 +50,9 @@ class SensorDataUpdated implements ShouldBroadcast
         return [
             'water_level' => $this->water_level,
             'soil_moisture' => $this->soil_moisture,
+            'temperature' => $this->temperature,
+            'humidity' => $this->humidity,
+            'water_float_status' => $this->water_float_status,
             'timestamp' => now()->toIso8601String()
         ];
     }

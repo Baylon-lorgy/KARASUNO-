@@ -2,11 +2,12 @@ import { useEffect } from 'react';
 import { Head, Link, useForm } from '@inertiajs/react';
 import InputError from '@/Components/InputError';
 
-export default function Login({ status, canResetPassword }) {
+export default function Login({ status, canResetPassword, csrf_token }) {
     const { data, setData, post, processing, errors, reset } = useForm({
         email: '',
         password: '',
         remember: false,
+        _token: csrf_token,
     });
 
     useEffect(() => {
@@ -15,11 +16,35 @@ export default function Login({ status, canResetPassword }) {
         };
     }, []);
 
+    const validateEmail = (email) => {
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return regex.test(email);
+    };
+
     const submit = (e) => {
         e.preventDefault();
+
+        // Client-side validation
+        if (!data.email) {
+            setData('errors', { email: 'Email is required' });
+            return;
+        }
+
+        if (!validateEmail(data.email)) {
+            setData('errors', { email: 'Please enter a valid email address' });
+            return;
+        }
+
+        if (!data.password) {
+            setData('errors', { password: 'Password is required' });
+            return;
+        }
+
+        // Use Inertia's post method with CSRF token
         post(route('login'), {
+            preserveScroll: true,
             onSuccess: () => {
-                window.location.href = '/admin/dashboard';
+                reset('password');
             },
         });
     };
@@ -32,7 +57,7 @@ export default function Login({ status, canResetPassword }) {
                 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" />
             </Head>
 
-            <style jsx global>{`
+            <style jsx="true" global="true">{`
                 :root {
                     --primary-green: #4a7862;
                     --secondary-green: #75a78b;
@@ -43,72 +68,23 @@ export default function Login({ status, canResetPassword }) {
                     --color-lavender: #E9EDF5;
                     --color-mist: rgba(255, 255, 255, 0.95);
                     --leaf-shadow: rgba(74, 120, 98, 0.15);
-                    --error-red: #ef4444;
-                    --success-green: #10b981;
-                    --warning-yellow: #f59e0b;
                 }
 
                 body {
-                    background: linear-gradient(
-                        135deg,
-                        var(--color-sage) 0%,
-                        var(--color-mint) 25%,
-                        var(--color-sky) 50%,
-                        var(--color-lavender) 100%
-                    );
+                    background: linear-gradient(to top,rgb(197, 210, 226) 0%,rgb(176, 212, 240) 100%);
                     min-height: 100vh;
                     font-family: 'Figtree', sans-serif;
-                    position: relative;
-                    overflow-x: hidden;
-                    color: #374151;
                 }
 
-                body::before {
-                    content: '';
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    bottom: 0;
-                    background: linear-gradient(
-                            rgba(255, 255, 255, 0.02) 1px,
-                            transparent 1px
-                        ),
-                        linear-gradient(
-                            90deg,
-                            rgba(255, 255, 255, 0.02) 1px,
-                            transparent 1px
-                        );
-                    background-size: 20px 20px;
-                    opacity: 0.5;
-                    pointer-events: none;
-                    z-index: 0;
-                }
-
-                @keyframes fadeInUp {
-                    from {
-                        opacity: 0;
-                        transform: translateY(20px);
-                    }
-                    to {
-                        opacity: 1;
-                        transform: translateY(0);
-                    }
+                @keyframes float {
+                    0%, 100% { transform: translateY(0) rotate(0deg); }
+                    50% { transform: translateY(-10px) rotate(5deg); }
                 }
 
                 @keyframes pulse {
-                    0% {
-                        transform: translate(-50%, -50%) scale(0.8);
-                        opacity: 0.5;
-                    }
-                    50% {
-                        transform: translate(-50%, -50%) scale(1.2);
-                        opacity: 0.8;
-                    }
-                    100% {
-                        transform: translate(-50%, -50%) scale(0.8);
-                        opacity: 0.5;
-                    }
+                    0% { transform: scale(0.95); opacity: 0.5; }
+                    50% { transform: scale(1.05); opacity: 0.8; }
+                    100% { transform: scale(0.95); opacity: 0.5; }
                 }
 
                 @keyframes glow {
@@ -127,28 +103,181 @@ export default function Login({ status, canResetPassword }) {
                     }
                 }
 
-                @keyframes spin {
-                    from { transform: rotate(0deg); }
-                    to { transform: rotate(360deg); }
+                .floating-leaves {
+                    position: fixed;
+                    width: 100%;
+                    height: 100%;
+                    pointer-events: none;
+                    z-index: 0;
+                }
+
+                .floating-leaf {
+                    position: absolute;
+                    width: 40px;
+                    height: 40px;
+                    background: linear-gradient(45deg, var(--primary-green), var(--secondary-green));
+                    opacity: 0.1;
+                    border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+                    animation: float 6s infinite;
+                }
+
+                .floating-leaf:nth-child(1) { top: 10%; left: 10%; animation-delay: 0s; }
+                .floating-leaf:nth-child(2) { top: 20%; right: 10%; animation-delay: 1s; }
+                .floating-leaf:nth-child(3) { bottom: 10%; left: 15%; animation-delay: 2s; }
+                .floating-leaf:nth-child(4) { bottom: 20%; right: 15%; animation-delay: 3s; }
+
+                .login-card {
+                    background: rgba(255, 255, 255, 0.9);
+                    backdrop-filter: blur(10px);
+                    border: 1px solid rgba(255, 255, 255, 0.5);
+                    box-shadow: 
+                        0 20px 40px rgba(0, 0, 0, 0.1),
+                        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+                    transform: translateY(0);
+                    transition: all 0.3s ease;
+                }
+
+                .login-card:hover {
+                    transform: translateY(-5px);
+                    box-shadow: 
+                        0 25px 50px rgba(0, 0, 0, 0.15),
+                        0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+                }
+
+                .input-group {
+                    position: relative;
+                    margin-bottom: 1.5rem;
+                }
+
+                .input-icon {
+                    position: absolute;
+                    left: 1rem;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    color: var(--primary-green);
+                    transition: all 0.3s ease;
+                }
+
+                .form-input {
+                    padding-left: 2.75rem !important;
+                    border-radius: 12px !important;
+                    transition: all 0.3s ease;
+                }
+
+                .form-input:focus {
+                    border-color: var(--primary-green) !important;
+                    box-shadow: 0 0 0 3px var(--leaf-shadow) !important;
+                }
+
+                .form-input:focus + .input-icon {
+                    transform: translateY(-50%) scale(1.1);
+                }
+
+                .submit-button {
+                    background: linear-gradient(135deg, #09203f, #537895);
+                    transition: all 0.3s ease;
+                    position: relative;
+                    overflow: hidden;
+                }
+
+                .submit-button::after {
+                    content: '';
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+                    transform: translateX(-100%);
+                    transition: transform 0.6s ease;
+                }
+
+                .submit-button:hover::after {
+                    transform: translateX(100%);
+                }
+
+                .gif-container {
+                    position: relative;
+                    width: 32px;
+                    height: 32px;
+                    margin: 0 auto;
+                    margin-bottom: 2rem;
+                }
+
+                .gif-glow {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 150%;
+                    height: 150%;
+                    transform: translate(-50%, -50%);
+                    background: radial-gradient(circle, rgba(200, 230, 213, 0.2) 0%, rgba(117, 167, 139, 0.1) 50%, transparent 70%);
+                    animation: pulse 3s ease-in-out infinite;
+                }
+
+                .error-popup {
+                    position: fixed;
+                    top: 20px;
+                    right: 20px;
+                    background: #fee2e2;
+                    border: 1px solid #ef4444;
+                    padding: 1rem 1.5rem;
+                    border-radius: 8px;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                    z-index: 50;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    animation: slideIn 0.3s ease-out;
+                }
+
+                @keyframes slideIn {
+                    from {
+                        transform: translateX(100%);
+                        opacity: 0;
+                    }
+                    to {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+
+                .error-popup i {
+                    color: #dc2626;
+                    font-size: 1.25rem;
+                }
+
+                .error-popup span {
+                    color: #7f1d1d;
+                    font-size: 0.875rem;
+                    font-weight: 500;
                 }
             `}</style>
 
-            <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative z-10">
-                <div className="w-full sm:max-w-md mt-6 px-6 py-4 bg-white/95 backdrop-blur-xl shadow-xl sm:rounded-2xl overflow-hidden relative animate-[fadeInUp_0.5s_ease-out]"
-                     style={{
-                         boxShadow: '0 8px 32px rgba(0, 0, 0, 0.08), 0 2px 4px rgba(255, 255, 255, 0.1)',
-                         transform: 'translateY(0)',
-                         transition: 'all 0.3s ease'
-                     }}>
-                    
-                    {/* Top Gradient Border */}
-                    <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-[#4a7862] via-[#75a78b] to-[#c8e6d5]" />
+            <div className="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 relative">
+                {errors.error && (
+                    <div className="error-popup">
+                        <i className="bi bi-exclamation-circle"></i>
+                        <span>{errors.error}</span>
+                    </div>
+                )}
 
+                <div className="floating-leaves">
+                    <div className="floating-leaf"></div>
+                    <div className="floating-leaf"></div>
+                    <div className="floating-leaf"></div>
+                    <div className="floating-leaf"></div>
+                </div>
+
+                <div className="w-full sm:max-w-md mt-6 px-8 py-6 login-card sm:rounded-2xl overflow-hidden">
                     <div className="text-center mb-8">
-                        <h1 className="text-2xl font-semibold bg-gradient-to-r from-[#4a7862] to-[#75a78b] bg-clip-text text-transparent">
-                            Botanical Gardens & Herbarium
+                        <div className="flex items-center justify-center mb-4">
+                            <i className="bi bi-shield-lock-fill text-4xl text-primary-green"></i>
+                        </div>
+                        <h1 className="text-2xl font-bold bg-gradient-to-r from-primary-green to-secondary-green bg-clip-text text-transparent">
+                            Welcome Back
                         </h1>
-                        <p className="mt-2 text-[#75a78b]">Welcome back! Please login to your account.</p>
+                        <p className="mt-2 text-gray-600">Please sign in to continue</p>
                     </div>
 
                     {/* Circular GIF */}
@@ -169,91 +298,73 @@ export default function Login({ status, canResetPassword }) {
                         />
                     </div>
 
-                    {status && (
-                        <div className="mb-4 p-4 bg-gradient-to-r from-[rgba(16,185,129,0.1)] to-[rgba(16,185,129,0.05)] border border-[rgba(16,185,129,0.2)] rounded-xl text-[#10b981] flex items-center gap-2 animate-[fadeInUp_0.3s_ease-out]">
-                            <i className="bi bi-check-circle" />
-                            <span>{status}</span>
-                        </div>
-                    )}
-
                     <form onSubmit={submit} className="space-y-6">
-                        <div>
-                            <label className="block text-[#4a7862] font-medium mb-2" htmlFor="email">
-                                <i className="bi bi-envelope me-2" />Email Address
-                            </label>
+                        <div className="input-group">
                             <input
-                                id="email"
                                 type="email"
+                                name="email"
                                 value={data.email}
-                                className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#75a78b] focus:ring focus:ring-[rgba(117,167,139,0.15)] bg-white/80 focus:bg-white transition-all duration-300"
-                                autoComplete="username"
-                                onChange={(e) => setData('email', e.target.value)}
+                                className="form-input w-full px-4 py-3 bg-white/80 border-2 border-gray-200"
+                                placeholder="Email Address"
+                                onChange={e => setData('email', e.target.value)}
                             />
-                            <InputError message={errors.email} className="mt-2 text-[#ef4444] text-sm flex items-center gap-1">
-                                <i className="bi bi-exclamation-circle" />
-                            </InputError>
+                            <i className="bi bi-envelope-fill input-icon"></i>
                         </div>
 
-                        <div>
-                            <label className="block text-[#4a7862] font-medium mb-2" htmlFor="password">
-                                <i className="bi bi-lock me-2" />Password
-                            </label>
+                        <div className="input-group">
                             <input
-                                id="password"
                                 type="password"
+                                name="password"
                                 value={data.password}
-                                className="w-full px-4 py-3.5 rounded-xl border-2 border-gray-200 focus:border-[#75a78b] focus:ring focus:ring-[rgba(117,167,139,0.15)] bg-white/80 focus:bg-white transition-all duration-300"
-                                autoComplete="current-password"
-                                onChange={(e) => setData('password', e.target.value)}
+                                className="form-input w-full px-4 py-3 bg-white/80 border-2 border-gray-200"
+                                placeholder="Password"
+                                onChange={e => setData('password', e.target.value)}
                             />
-                            <InputError message={errors.password} className="mt-2 text-[#ef4444] text-sm flex items-center gap-1">
-                                <i className="bi bi-exclamation-circle" />
-                            </InputError>
+                            <i className="bi bi-lock-fill input-icon"></i>
                         </div>
 
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="checkbox"
-                                name="remember"
-                                id="remember"
-                                className="w-4 h-4 rounded border-2 border-[#75a78b] text-[#4a7862] focus:ring-[#75a78b]"
-                                checked={data.remember}
-                                onChange={(e) => setData('remember', e.target.checked)}
-                            />
-                            <label htmlFor="remember" className="text-[#75a78b]">
-                                Remember me
+                        <div className="flex items-center justify-between">
+                            <label className="flex items-center gap-2 cursor-pointer group">
+                                <input
+                                    type="checkbox"
+                                    name="remember"
+                                    checked={data.remember}
+                                    onChange={e => setData('remember', e.target.checked)}
+                                    className="w-4 h-4 rounded border-2 border-gray-300 text-primary-green focus:ring-primary-green"
+                                />
+                                <span className="text-sm text-gray-600 group-hover:text-gray-800">Remember me</span>
                             </label>
+
+                            {canResetPassword && (
+                                <Link
+                                    href={route('password.request')}
+                                    className="text-sm text-primary-green hover:text-secondary-green transition-colors"
+                                >
+                                    Forgot password?
+                                </Link>
+                            )}
                         </div>
 
                         <button
                             type="submit"
                             disabled={processing}
-                            className="w-full py-3.5 bg-gradient-to-r from-[#4a7862] to-[#75a78b] text-white rounded-xl font-medium shadow-lg shadow-[rgba(74,120,98,0.15)] hover:translate-y-[-2px] hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2"
+                            className="submit-button w-full py-3 rounded-xl text-white font-semibold 
+                                     shadow-lg flex items-center justify-center gap-2
+                                     disabled:opacity-50 disabled:cursor-not-allowed
+                                     hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                         >
                             {processing ? (
                                 <>
-                                    <i className="bi bi-arrow-repeat animate-spin" />
-                                    Logging in...
+                                    <i className="bi bi-arrow-repeat animate-spin"></i>
+                                    <span>Signing in...</span>
                                 </>
                             ) : (
                                 <>
-                                    <i className="bi bi-box-arrow-in-right" />
-                                    Log in
+                                    <i className="bi bi-box-arrow-in-right"></i>
+                                    <span>Sign In</span>
                                 </>
                             )}
                         </button>
-
-                        {canResetPassword && (
-                            <div className="text-center">
-                                <Link
-                                    href={route('password.request')}
-                                    className="text-[#75a78b] hover:text-[#4a7862] transition-colors duration-300 flex items-center justify-center gap-1"
-                                >
-                                    <i className="bi bi-key" />
-                                    Forgot your password?
-                                </Link>
-                            </div>
-                        )}
                     </form>
                 </div>
             </div>

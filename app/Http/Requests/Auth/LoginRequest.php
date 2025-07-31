@@ -5,9 +5,10 @@ namespace App\Http\Requests\Auth;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
 
 class LoginRequest extends FormRequest
 {
@@ -39,47 +40,72 @@ class LoginRequest extends FormRequest
      */
     public function authenticate(): void
     {
-        $this->ensureIsNotRateLimited();
+        $this->checkRateLimit();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
-
+        // First check if the user exists
+        $user = User::where('email', $this->email)->first();
+        
+        if (!$user) {
+            $this->incrementAttempts();
             throw ValidationException::withMessages([
-                'email' => trans('auth.failed'),
+                'error' => 'Invalid admin credentials. Please try again.',
             ]);
         }
 
-        RateLimiter::clear($this->throttleKey());
+        // Then attempt authentication
+        if (!Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+            $this->incrementAttempts();
+            throw ValidationException::withMessages([
+                'error' => 'Invalid admin credentials. Please try again.',
+            ]);
+        }
+
+        $this->clearAttempts();
     }
 
     /**
-     * Ensure the login request is not rate limited.
+     * Check if the login attempts are within limits.
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function ensureIsNotRateLimited(): void
+    protected function checkRateLimit(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
-            return;
+        $key = 'login_attempts_'.$this->throttleKey();
+        $attempts = Cache::get($key, 0);
+
+        if ($attempts >= 5) {
+            $seconds = 60;
+            event(new Lockout($this));
+
+            throw ValidationException::withMessages([
+                'error' => 'Too many login attempts. Please try again in ' . ceil($seconds / 60) . ' minutes.',
+            ]);
         }
+    }
 
-        event(new Lockout($this));
+    /**
+     * Increment the login attempts for the user.
+     */
+    protected function incrementAttempts(): void
+    {
+        $key = 'login_attempts_'.$this->throttleKey();
+        $attempts = Cache::get($key, 0);
+        Cache::put($key, $attempts + 1, 60);
+    }
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
-
-        throw ValidationException::withMessages([
-            'email' => trans('auth.throttle', [
-                'seconds' => $seconds,
-                'minutes' => ceil($seconds / 60),
-            ]),
-        ]);
+    /**
+     * Clear the login attempts for the user.
+     */
+    protected function clearAttempts(): void
+    {
+        Cache::forget('login_attempts_'.$this->throttleKey());
     }
 
     /**
      * Get the rate limiting throttle key for the request.
      */
-    public function throttleKey(): string
+    protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->input('email')).'|'.$this->ip());
     }
 }

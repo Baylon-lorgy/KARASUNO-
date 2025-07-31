@@ -4,22 +4,15 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Sanctum\HasApiTokens;
-use MongoDB\Laravel\Auth\User as MongoDBAuthenticatable;
+use MongoDB\Laravel\Auth\User as MongoDBUser;
 
-class User extends MongoDBAuthenticatable
+class User extends MongoDBUser
 {
-    use HasApiTokens;
-
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory;
-    use HasProfilePhoto;
-    use Notifiable;
-    use TwoFactorAuthenticatable;
+    use HasApiTokens, HasFactory, HasProfilePhoto, Notifiable, TwoFactorAuthenticatable;
 
     protected $connection = 'mongodb';
     protected $collection = 'users';
@@ -33,6 +26,7 @@ class User extends MongoDBAuthenticatable
         'name',
         'email',
         'password',
+        'api_token',
     ];
 
     /**
@@ -43,8 +37,6 @@ class User extends MongoDBAuthenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'two_factor_recovery_codes',
-        'two_factor_secret',
     ];
 
     /**
@@ -57,12 +49,22 @@ class User extends MongoDBAuthenticatable
     ];
 
     /**
-     * Get the attributes that should be cast.
+     * The attributes that should be cast.
      *
-     * @return array<string, string>
+     * @var array<string, string>
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function generateApiToken()
+    {
+        // Delete any existing tokens
+        $this->tokens()->delete();
+        
+        // Create a new token using Sanctum
+        $token = $this->createToken('auth-token')->plainTextToken;
+        return $token;
+    }
 }
