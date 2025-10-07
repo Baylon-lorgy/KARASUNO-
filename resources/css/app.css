@@ -1,0 +1,499 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Custom styles */
+@layer components {
+    .btn-primary {
+        @apply bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200;
+    }
+    
+    .btn-secondary {
+        @apply bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-all duration-200;
+    }
+
+    .input-field {
+        @apply mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 transition-all duration-200;
+    }
+
+    .form-label {
+        @apply block text-sm font-medium text-gray-700;
+    }
+
+    .card {
+        @apply bg-white rounded-xl shadow-sm border border-gray-100 p-4 transition-all duration-200 hover:shadow-md;
+    }
+
+    .card-header {
+        @apply text-xl font-semibold text-gray-800 mb-4;
+    }
+
+    /* responsive utilities */
+    .container-responsive {
+        @apply w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+    }
+
+    .grid-responsive {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6;
+    }
+
+    .text-responsive {
+        @apply text-sm sm:text-base lg:text-lg;
+    }
+
+    .heading-responsive {
+        @apply text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold;
+    }
+
+    .padding-responsive {
+        @apply p-4 sm:p-6 lg:p-8;
+    }
+
+    .margin-responsive {
+        @apply m-2 sm:m-4 lg:m-6;
+    }
+
+    /* mobile-first navigation */
+    .nav-mobile {
+        @apply fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-lg border-b border-green-100;
+    }
+
+    .nav-desktop {
+        @apply hidden lg:flex;
+    }
+
+    .nav-mobile-menu {
+        @apply lg:hidden;
+    }
+
+    /* responsive sidebar */
+    .sidebar-mobile {
+        @apply fixed inset-y-0 left-0 z-40 w-64 bg-white/95 backdrop-blur-xl shadow-xl transform transition-transform duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0;
+    }
+
+    .sidebar-desktop {
+        @apply hidden lg:block;
+    }
+
+    /* responsive charts */
+    .chart-container {
+        @apply w-full h-64 sm:h-80 lg:h-96;
+    }
+
+    .chart-responsive {
+        @apply w-full h-full;
+    }
+
+    /* responsive tables */
+    .table-responsive {
+        @apply w-full overflow-x-auto;
+    }
+
+    .table-mobile {
+        @apply block lg:hidden;
+    }
+
+    .table-desktop {
+        @apply hidden lg:table;
+    }
+
+    /* responsive cards */
+    .card-responsive {
+        @apply bg-white/95 backdrop-blur-xl shadow-xl rounded-xl border border-green-100 transition-all duration-200 hover:shadow-2xl hover:-translate-y-1;
+    }
+
+    .card-mobile {
+        @apply p-3 sm:p-4 lg:p-6;
+    }
+
+    /* responsive buttons */
+    .btn-responsive {
+        @apply px-3 py-2 sm:px-4 sm:py-2 lg:px-6 lg:py-3 text-sm sm:text-base font-medium rounded-lg transition-all duration-200;
+    }
+
+    .btn-mobile {
+        @apply w-full sm:w-auto;
+    }
+
+    /* responsive forms */
+    .form-responsive {
+        @apply space-y-4 sm:space-y-6;
+    }
+
+    .form-group-responsive {
+        @apply grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4;
+    }
+
+    /* responsive modals */
+    .modal-responsive {
+        @apply fixed inset-0 bg-black/30 backdrop-blur-sm z-50 flex items-center justify-center p-4;
+    }
+
+    .modal-content-responsive {
+        @apply bg-white bg-opacity-90 backdrop-blur-sm rounded-lg shadow-xl w-full max-w-lg border border-gray-100;
+    }
+
+    /* responsive notifications */
+    .notification-responsive {
+        @apply fixed bottom-4 right-4 z-50 max-w-sm w-full;
+    }
+
+    /* responsive status indicators */
+    .status-responsive {
+        @apply flex items-center space-x-2 text-xs sm:text-sm;
+    }
+
+    /* responsive data display */
+    .data-responsive {
+        @apply text-lg sm:text-xl lg:text-2xl font-bold;
+    }
+
+    .label-responsive {
+        @apply text-xs sm:text-sm lg:text-base font-medium;
+    }
+
+    /* responsive spacing */
+    .space-responsive {
+        @apply space-y-2 sm:space-y-4 lg:space-y-6;
+    }
+
+    .gap-responsive {
+        @apply gap-2 sm:gap-4 lg:gap-6;
+    }
+
+    /* responsive typography */
+    .text-mobile {
+        @apply text-xs sm:text-sm lg:text-base;
+    }
+
+    .text-tablet {
+        @apply text-sm sm:text-base lg:text-lg;
+    }
+
+    .text-desktop {
+        @apply text-base sm:text-lg lg:text-xl;
+    }
+
+    /* responsive icons */
+    .icon-responsive {
+        @apply w-4 h-4 sm:w-5 sm:h-5 lg:w-6 lg:h-6;
+    }
+
+    .icon-mobile {
+        @apply w-5 h-5;
+    }
+
+    .icon-desktop {
+        @apply w-6 h-6;
+    }
+
+    /* responsive progress bars */
+    .progress-responsive {
+        @apply w-full h-2 sm:h-3 lg:h-4 bg-gray-200 rounded-full overflow-hidden;
+    }
+
+    .progress-bar-responsive {
+        @apply h-full transition-all duration-500 ease-out;
+    }
+
+    /* responsive alerts */
+    .alert-responsive {
+        @apply p-3 sm:p-4 lg:p-6 rounded-lg border-l-4;
+    }
+
+    /* responsive loading states */
+    .loading-responsive {
+        @apply flex items-center justify-center p-4 sm:p-6 lg:p-8;
+    }
+
+    /* responsive tooltips */
+    .tooltip-responsive {
+        @apply absolute z-50 px-2 py-1 text-xs bg-gray-900 text-white rounded opacity-0 group-hover:opacity-100 transition-opacity duration-200;
+    }
+
+    /* responsive animations */
+    .animate-responsive {
+        @apply transition-all duration-200 ease-in-out;
+    }
+
+    .hover-responsive {
+        @apply hover:scale-105 hover:shadow-lg transition-all duration-200;
+    }
+
+    /* responsive focus states */
+    .focus-responsive {
+        @apply focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2;
+    }
+
+    /* responsive accessibility */
+    .sr-only-responsive {
+        @apply sr-only sm:not-sr-only;
+    }
+
+    /* responsive print styles */
+    @media print {
+        .print-hidden {
+            @apply hidden;
+        }
+        
+        .print-visible {
+            @apply block;
+        }
+    }
+}
+
+    /* responsive breakpoint utilities */
+    @layer utilities {
+        .mobile-only {
+            @apply block sm:hidden;
+        }
+        
+        .tablet-only {
+            @apply hidden sm:block lg:hidden;
+        }
+        
+        .desktop-only {
+            @apply hidden lg:block;
+        }
+        
+        .mobile-tablet {
+            @apply block lg:hidden;
+        }
+        
+        .tablet-desktop {
+            @apply hidden sm:block;
+        }
+        
+        /* desktop-focused utilities */
+        .desktop-enhanced {
+            @apply lg:text-lg lg:leading-relaxed;
+        }
+        
+        .desktop-spacing {
+            @apply lg:p-8 lg:space-y-8;
+        }
+        
+        .desktop-grid {
+            @apply lg:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4;
+        }
+        
+        .desktop-chart {
+            @apply lg:h-96 xl:h-[500px];
+        }
+        
+        .desktop-sidebar {
+            @apply lg:w-64 xl:w-72;
+        }
+        
+        .desktop-sidebar-collapsed {
+            @apply lg:w-16;
+        }
+        
+        .desktop-content {
+            @apply lg:ml-64 xl:ml-72;
+        }
+        
+        .desktop-content-collapsed {
+            @apply lg:ml-16;
+        }
+        
+        .desktop-header {
+            @apply lg:text-4xl xl:text-5xl;
+        }
+        
+        .desktop-subheader {
+            @apply lg:text-xl xl:text-2xl;
+        }
+        
+        .desktop-card {
+            @apply lg:p-6 xl:p-8;
+        }
+        
+        .desktop-button {
+            @apply lg:px-6 lg:py-3 lg:text-base;
+        }
+        
+        .desktop-icon {
+            @apply lg:w-6 lg:h-6 xl:w-8 xl:h-8;
+        }
+        
+        .desktop-tooltip {
+            @apply lg:w-80 xl:w-96;
+        }
+        
+        .desktop-modal {
+            @apply lg:max-w-4xl xl:max-w-5xl;
+        }
+        
+        .desktop-table {
+            @apply lg:text-sm xl:text-base;
+        }
+        
+        .desktop-navigation {
+            @apply lg:space-x-6 xl:space-x-8;
+        }
+        
+        .desktop-breadcrumb {
+            @apply lg:text-lg xl:text-xl;
+        }
+        
+        .desktop-status {
+            @apply lg:text-lg xl:text-xl;
+        }
+        
+        .desktop-progress {
+            @apply lg:h-4 xl:h-6;
+        }
+        
+        .desktop-chart-container {
+            @apply lg:h-80 xl:h-96 2xl:h-[500px];
+        }
+        
+        .desktop-summary {
+            @apply lg:grid-cols-2 xl:grid-cols-3;
+        }
+        
+        .desktop-dashboard {
+            @apply lg:grid-cols-5 xl:grid-cols-6;
+        }
+        
+        .desktop-sensor-card {
+            @apply lg:p-4 xl:p-6;
+        }
+        
+        .desktop-chart-title {
+            @apply lg:text-2xl xl:text-3xl;
+        }
+        
+        .desktop-chart-subtitle {
+            @apply lg:text-base xl:text-lg;
+        }
+        
+        .desktop-data-display {
+            @apply lg:text-xl xl:text-2xl;
+        }
+        
+        .desktop-label {
+            @apply lg:text-base xl:text-lg;
+        }
+        
+        .desktop-metric {
+            @apply lg:text-2xl xl:text-3xl;
+        }
+        
+        .desktop-unit {
+            @apply lg:text-lg xl:text-xl;
+        }
+        
+        .desktop-status-indicator {
+            @apply lg:w-8 lg:h-8 xl:w-10 xl:h-10;
+        }
+        
+        .desktop-status-icon {
+            @apply lg:w-4 lg:h-4 xl:w-5 xl:h-5;
+        }
+        
+        .desktop-tooltip-text {
+            @apply lg:text-sm xl:text-base;
+        }
+        
+        .desktop-modal-content {
+            @apply lg:p-8 xl:p-10;
+        }
+        
+        .desktop-modal-title {
+            @apply lg:text-2xl xl:text-3xl;
+        }
+        
+        .desktop-modal-body {
+            @apply lg:text-base xl:text-lg;
+        }
+        
+        .desktop-chart-legend {
+            @apply lg:text-sm xl:text-base;
+        }
+        
+        .desktop-chart-axis {
+            @apply lg:text-xs xl:text-sm;
+        }
+        
+        .desktop-chart-point {
+            @apply lg:w-4 lg:h-4 xl:w-5 xl:h-5;
+        }
+        
+        .desktop-chart-line {
+            @apply lg:border-2 xl:border-3;
+        }
+        
+        .desktop-chart-fill {
+            @apply lg:opacity-20 xl:opacity-25;
+        }
+        
+        .desktop-interaction {
+            @apply lg:hover:scale-105 lg:active:scale-95;
+        }
+        
+        .desktop-focus {
+            @apply lg:focus:ring-4 lg:focus:ring-offset-2;
+        }
+        
+        .desktop-transition {
+            @apply lg:transition-all lg:duration-300 lg:ease-in-out;
+        }
+        
+        .desktop-shadow {
+            @apply lg:shadow-xl xl:shadow-2xl;
+        }
+        
+        .desktop-border {
+            @apply lg:border-2 xl:border-3;
+        }
+        
+        .desktop-rounded {
+            @apply lg:rounded-xl xl:rounded-2xl;
+        }
+        
+        .desktop-backdrop {
+            @apply lg:backdrop-blur-xl xl:backdrop-blur-2xl;
+        }
+        
+        .desktop-gradient {
+            @apply lg:from-transparent lg:via-white/50 lg:to-transparent;
+        }
+        
+        .desktop-animation {
+            @apply lg:animate-pulse xl:animate-bounce;
+        }
+        
+        .desktop-responsive {
+            @apply lg:container lg:mx-auto lg:px-8 xl:px-12;
+        }
+        
+        .desktop-max-width {
+            @apply lg:max-w-7xl xl:max-w-8xl 2xl:max-w-9xl;
+        }
+        
+        .desktop-min-height {
+            @apply lg:min-h-screen xl:min-h-screen;
+        }
+        
+        .desktop-overflow {
+            @apply lg:overflow-auto xl:overflow-visible;
+        }
+        
+        .desktop-scrollbar {
+            @apply lg:scrollbar-thin lg:scrollbar-thumb-gray-300 lg:scrollbar-track-gray-100;
+        }
+        
+        .desktop-selection {
+            @apply lg:selection:bg-blue-200 lg:selection:text-blue-900;
+        }
+        
+        .desktop-print {
+            @apply lg:print:hidden;
+        }
+        
+        .desktop-screen {
+            @apply lg:screen-lg xl:screen-xl 2xl:screen-2xl;
+        }
+    }
